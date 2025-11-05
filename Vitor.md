@@ -1,4 +1,4 @@
 ## Ola entrei
 
 
-## Sou resonsavel pela documentacao do projeto
+## Sou responsavel pela documentacao do projeto
