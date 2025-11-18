@@ -1,1 +1,12 @@
-<p>chat works!</p>
+<div class="chat">
+  <h2>💬 Conversar com a BarryAI</h2>
+  <div class="chat-area">
+    <div *ngFor="let msg of mensagens" class="msg" [class.user]="msg.tipo === 'user'">
+      <strong>{{ msg.tipo === 'user' ? 'Você:' : 'BarryAI:' }}</strong> {{ msg.texto }}
+    </div>
+  </div>
+  <div class="input-area">
+    <input #pergunta type="text" placeholder="Faça sua pergunta..." />
+    <button (click)="enviar(pergunta.value)">Enviar</button>
+  </div>
+</div>
