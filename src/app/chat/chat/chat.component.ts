@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IAController } from '../../../controllers/ia.controller';
+import { IAController } from 'src/app/controllers/ia.controller';
 
 interface Mensagem {
   texto: string;
