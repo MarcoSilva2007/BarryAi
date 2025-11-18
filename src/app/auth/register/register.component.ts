@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthController } from '../../../controllers/auth.controller';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { AuthController } from 'src/app/controllers/auth.controller';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './register.component.html',
   styles: [`
     .form-container {
@@ -14,22 +18,33 @@ import { AuthController } from '../../../controllers/auth.controller';
       width: 100%; padding: 0.6rem; margin: 0.5rem 0; box-sizing: border-box;
     }
     label { display: block; margin: 0.5rem 0; }
-    button { width: 100%; padding: 0.6rem; background: #3AAED8; color: white; border: none; border-radius: 4px; }
+    button { width: 100%; padding: 0.6rem; background: #3AAED8; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { opacity: 0.9; }
   `]
 })
 export class RegisterComponent {
+  
+  nome: string = '';
+  email: string = '';
+  senha: string = '';
+  isPlus: boolean = false;
+
   constructor(private auth: AuthController, private router: Router) {}
 
-  register(nome: string, email: string, senha: string, isPlus: boolean): void {
-    const tipo = isPlus ? 'cliente-plus' : 'cliente';
-    this.auth.register(nome, email, senha, tipo).subscribe({
+  register(): void {
+    // CORREÇÃO AQUI:
+    // 1. Criamos uma variável que define o tipo com base no checkbox
+    const tipoUsuario = this.isPlus ? 'premium' : 'basic';
+
+    // 2. Passamos essa variável 'tipoUsuario' no lugar onde estava o ""User""
+    this.auth.register(this.nome, this.email, this.senha, tipoUsuario).subscribe({
       next: () => {
         alert('Conta criada com sucesso! Faça login.');
         this.router.navigate(['/login']);
       },
-      error: (err) => {
-        console.error('Erro ao criar conta:', err);
-        alert('Erro ao criar conta. Tente outro e-mail ou verifique os dados.');
+      error: (err: any) => {
+        console.error('Erro:', err);
+        alert('Erro ao criar conta.');
       }
     });
   }

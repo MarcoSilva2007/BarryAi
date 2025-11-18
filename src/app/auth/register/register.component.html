@@ -1,11 +1,19 @@
 <div class="form-container">
   <h2>Criar Conta</h2>
-  <input #nome type="text" placeholder="Nome completo" required />
-  <input #email type="email" placeholder="E-mail" required />
-  <input #senha type="password" placeholder="Senha" required />
+  
+  <label>Nome</label>
+  <input [(ngModel)]="nome" type="text" placeholder="Seu Nome" />
+
+  <label>Email</label>
+  <input [(ngModel)]="email" type="email" placeholder="Seu Email" />
+
+  <label>Senha</label>
+  <input [(ngModel)]="senha" type="password" placeholder="Sua Senha" />
+
   <label>
-    <input type="checkbox" #isPlus /> Quero ser Cliente Premium (acesso a mais modelos e upload de arquivos)
+    <!-- Checkbox para virar cliente Plus -->
+    <input [(ngModel)]="isPlus" type="checkbox" /> Quero ser Premium (Plus)
   </label>
-  <button (click)="register(nome.value, email.value, senha.value, isPlus.checked)">Criar Conta</button>
-  <p><a routerLink="/login">Já tenho conta</a></p>
+
+  <button (click)="register()">Registrar</button>
 </div>

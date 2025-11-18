@@ -1,0 +1,155 @@
+@import 'prismjs/themes/prism-tomorrow.css'; 
+
+// Variáveis do Tema
+$bg-color: #1e1e1e;       // Fundo geral
+$chat-bg: #252526;        // Fundo da área de chat
+$input-bg: #333333;       // Fundo do input
+$flash-red: #dc2626;      // Vermelho do botão
+$flash-yellow: #fbbf24;   // Detalhes
+$text-color: #e5e7eb;     // Texto claro
+$msg-user: #005c4b;       // Verde escuro (estilo Zap dark)
+$msg-ai: #3e4042;         // Cinza (IA)
+
+body {
+    margin: 0;
+    background-color: #111;
+}
+
+:host {
+  display: block;
+  height: 100vh;
+  background-color: $bg-color;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.chat {
+  max-width: 900px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: $chat-bg;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+
+  h2 {
+    background-color: $input-bg;
+    color: $text-color;
+    padding: 15px;
+    margin: 0;
+    text-align: center;
+    border-bottom: 1px solid #444;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    
+    span { color: $flash-yellow; } // O raiozinho
+  }
+}
+
+.chat-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  // Scrollbar bonita
+  &::-webkit-scrollbar { width: 8px; }
+  &::-webkit-scrollbar-track { background: $chat-bg; }
+  &::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+}
+
+.msg {
+  max-width: 80%;
+  padding: 10px 15px;
+  border-radius: 10px;
+  line-height: 1.5;
+  color: $text-color;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+
+  strong {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  // Estilo da IA (Alinhado a esquerda)
+  background-color: $msg-ai;
+  align-self: flex-start;
+  border-top-left-radius: 0;
+
+  // Estilo do Usuário (Alinhado a direita)
+  &.user {
+    background-color: $msg-user;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+  }
+}
+
+// Estilização do Markdown (Código, Negrito, Listas)
+.markdown-text {
+  ::ng-deep {
+    p { margin: 0 0 10px 0; }
+    p:last-child { margin-bottom: 0; }
+    
+    // Blocos de código (fundo preto)
+    pre {
+      background: #111 !important;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+      border: 1px solid #444;
+      margin: 10px 0;
+    }
+    
+    code {
+      font-family: 'Consolas', monospace;
+      font-size: 0.9rem;
+      color: #ff79c6; // Rosa estilo Drácula
+    }
+    
+    strong { color: $flash-yellow; }
+  }
+}
+
+.input-area {
+  padding: 15px;
+  background-color: $input-bg;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #444;
+
+  input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 25px;
+    border: 1px solid #555;
+    background-color: #222;
+    color: white;
+    outline: none;
+    
+    &:focus { border-color: $flash-red; }
+  }
+
+  button {
+    padding: 0 25px;
+    border-radius: 25px;
+    border: none;
+    background-color: $flash-red;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.1s;
+
+    &:hover { background-color: #b91c1c; }
+    &:active { transform: scale(0.95); }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthController } from 'src/app/controllers/auth.controller';
 
 @Component({
   selector: 'app-admin',
@@ -10,4 +12,10 @@ import { CommonModule } from '@angular/common';
 })
 export class AdminComponent {
 
+  constructor(private auth: AuthController, private router: Router) {}
+
+  sair(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
+  }
 }

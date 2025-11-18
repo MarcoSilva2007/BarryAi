@@ -1,12 +1,28 @@
 <div class="chat">
-  <h2>💬 Conversar com a BarryAI</h2>
-  <div class="chat-area">
+  <h2>⚡ Barry AI Chat</h2>
+  
+  <div class="chat-area" #scrollMe style="height: 400px; overflow-y: auto;">
+    
     <div *ngFor="let msg of mensagens" class="msg" [class.user]="msg.tipo === 'user'">
-      <strong>{{ msg.tipo === 'user' ? 'Você:' : 'BarryAI:' }}</strong> {{ msg.texto }}
+      <strong>{{ msg.tipo === 'user' ? 'Você:' : 'BarryAI:' }}</strong> 
+      
+      <!-- MUDANÇA 1: Usamos a tag markdown para formatar o texto (negrito, código, etc) -->
+      <div class="markdown-text">
+        <markdown [data]="msg.texto"></markdown>
+      </div>
     </div>
+
+    <div *ngIf="carregando"><em>Barry está digitando...</em></div>
   </div>
+
   <div class="input-area">
-    <input #pergunta type="text" placeholder="Faça sua pergunta..." />
-    <button (click)="enviar(pergunta.value)">Enviar</button>
+    <!-- MUDANÇA 2: Usamos [(ngModel)]="textoInput" em vez de #perguntaInput -->
+    <input [(ngModel)]="textoInput" 
+           type="text" 
+           placeholder="Faça sua pergunta..." 
+           (keyup.enter)="enviar()" />
+    
+    <!-- MUDANÇA 3: Chamamos enviar() sem argumentos -->
+    <button (click)="enviar()">Enviar</button>
   </div>
 </div>
