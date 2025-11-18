@@ -1,1 +1,7 @@
-<p>login works!</p>
+<div class="form-container">
+  <h2>Entrar</h2>
+  <input #email type="email" placeholder="E-mail" />
+  <input #senha type="password" placeholder="Senha" />
+  <button (click)="login(email.value, senha.value)">Entrar</button>
+  <p><a routerLink="/register">Não tem conta? Cadastre-se</a></p>
+</div>

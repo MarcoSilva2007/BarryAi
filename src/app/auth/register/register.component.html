@@ -1,1 +1,11 @@
-<p>register works!</p>
+<div class="form-container">
+  <h2>Criar Conta</h2>
+  <input #nome type="text" placeholder="Nome completo" required />
+  <input #email type="email" placeholder="E-mail" required />
+  <input #senha type="password" placeholder="Senha" required />
+  <label>
+    <input type="checkbox" #isPlus /> Quero ser Cliente Premium (acesso a mais modelos e upload de arquivos)
+  </label>
+  <button (click)="register(nome.value, email.value, senha.value, isPlus.checked)">Criar Conta</button>
+  <p><a routerLink="/login">Já tenho conta</a></p>
+</div>
