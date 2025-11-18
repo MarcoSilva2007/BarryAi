@@ -1,7 +1,14 @@
 <div class="form-container">
-  <h2>Entrar</h2>
-  <input #email type="email" placeholder="E-mail" />
-  <input #senha type="password" placeholder="Senha" />
-  <button (click)="login(email.value, senha.value)">Entrar</button>
-  <p><a routerLink="/register">Não tem conta? Cadastre-se</a></p>
+  <h2>🔐 Login Barry AI</h2>
+  
+  <label>Email</label>
+  <input [(ngModel)]="emailInput" type="text" placeholder="ex: flash@barry.com" />
+
+  <label>Senha</label>
+  <input [(ngModel)]="senhaInput" type="password" placeholder="Sua senha" />
+
+  <button class="btn-primary" (click)="login()">ENTRAR</button>
+  
+  <!-- Novo Botão de Registro -->
+  <button class="btn-secondary" (click)="irParaRegistro()">CRIAR CONTA NOVA</button>
 </div>

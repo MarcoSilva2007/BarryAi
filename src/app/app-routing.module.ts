@@ -1,22 +1,39 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
 
-export const routes: Routes = [
+// As rotas que você definiu
+const routes: Routes = [
+  {
+    path: 'register',
+    component: RegisterComponent,
+  },
   {
     path: 'login',
-    loadComponent: () => import('./auth/login/login.component').then(c => c.LoginComponent),
+    component: LoginComponent,
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./auth/login/login.component').then((c) => c.LoginComponent),
   },
   {
     path: 'register',
-    loadComponent: () => import('./auth/register/register.component').then(c => c.RegisterComponent),
+    loadComponent: () =>
+      import('./auth/register/register.component').then(
+        (c) => c.RegisterComponent
+      ),
   },
   {
     path: 'chat',
-    loadComponent: () => import('./chat/chat/chat.component').then(c => c.ChatComponent),
+    loadComponent: () =>
+      import('./chat/chat/chat.component').then((c) => c.ChatComponent),
   },
   {
     path: 'admin',
-    loadComponent: () => import('./admin/admin/admin.component').then(c => c.AdminComponent),
+    loadComponent: () =>
+      import('./admin/admin/admin.component').then((c) => c.AdminComponent),
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' },
@@ -24,6 +41,7 @@ export const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+// AQUI ESTÁ O SEGREDO: O nome da classe tem que ser este:
+export class AppRoutingModule {}

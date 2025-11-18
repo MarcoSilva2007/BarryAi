@@ -2,55 +2,62 @@ import os
 import google.generativeai as genai
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from dotenv import load_dotenv
+# Se você optou por colocar a chave direto, pode remover o dotenv
+from dotenv import load_dotenv 
 from fastapi.middleware.cors import CORSMiddleware
-from pathlib import Path # <--- Adicione isso
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
-# 1. Carrega variáveis FORÇANDO o caminho correto
-env_path = Path(__file__).parent / '.env' # Pega a pasta onde este arquivo está
-load_dotenv(dotenv_path=env_path)
-
+# 1. Configuração da Chave (Se estiver usando .env)
+load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 
-# Debug: Vamos imprimir no terminal para ver se achou (depois você apaga)
-print(f"Tentando ler o arquivo em: {env_path}")
-print(f"Chave encontrada? {'SIM' if api_key else 'NÃO'}")
+# --- OU --- Se preferir a chave direto no código (Opção TCC Rápido):
+# api_key = "AIzaSy.....Sua_Chave_Aqui......"
 
 if not api_key:
-    raise ValueError("ERRO: A chave GOOGLE_API_KEY não foi encontrada no .env. Verifique se o arquivo existe e não está como .txt")
+    # Para não travar o servidor se esquecer a chave, vamos avisar no print
+    print("AVISO: Chave API não encontrada.")
 
+# 2. Configura o Gemini
+if api_key:
+    genai.configure(api_key=api_key)
 
-# 2. Configura o Google Gemini
-genai.configure(api_key=api_key)
+# CONFIGURAÇÃO DE SEGURANÇA (Isso resolve o erro finish_reason)
+# Estamos dizendo para o Google: "Não bloqueie nada, é só um personagem"
+safety_settings = {
+    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+}
 
-# Configuração da IA (Persona do Barry)
 generation_config = {
-    "temperature": 0.7, # Criatividade moderada
+    "temperature": 0.7,
     "top_p": 0.95,
     "top_k": 64,
-    "max_output_tokens": 200, # Respostas curtas
+    "max_output_tokens": 700, # Aumentei um pouco para não cortar
     "response_mime_type": "text/plain",
 }
 
-# Define a persona no System Prompt
 system_instruction = (
     "Você é o Barry AI, inspirado no herói Flash. "
     "Sua principal característica é a velocidade. "
     "Responda de forma extremamente rápida, curta e direta ao ponto. "
     "Não enrole. Se perguntarem quem você é, diga que é a IA mais rápida viva."
+    "Você tem muitos tokens para usar, mas não significa que deve usá-los todos. Seja rápido quando a respota permitir."
+    "Quando for pedido instruções para você, seja específico se necessário."
 )
 
-# Inicializa o modelo "Gemini 1.5 Flash" (Rápido e Grátis)
+# Inicializa o modelo
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="gemini-2.5-flash",
     generation_config=generation_config,
-    system_instruction=system_instruction
+    system_instruction=system_instruction,
+    safety_settings=safety_settings # <--- APLICANDO A SEGURANÇA AQUI
 )
 
-# 3. Inicia o FastAPI
 app = FastAPI(title="Barry AI API")
 
-# 4. Configura CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:4200"],
@@ -65,17 +72,22 @@ class UserRequest(BaseModel):
 @app.post("/chat")
 async def chat_with_barry(request: UserRequest):
     try:
-        # O Gemini usa start_chat ou generate_content. 
-        # Para uma resposta simples e rápida (sem memória longa), usamos generate_content.
-        
-        # Usamos await para ser assíncrono e rápido
+        if not api_key:
+            return {"response": "Erro: A chave da API não foi configurada no servidor."}
+
+        # Faz a chamada assíncrona
         response = await model.generate_content_async(request.message)
         
-        return {"response": response.text}
+        # PROTEÇÃO CONTRA O ERRO (Se vier vazio, não quebra)
+        if response.candidates and response.candidates[0].content.parts:
+            return {"response": response.text}
+        else:
+            print(f"Bloqueio do Gemini. Motivo: {response.prompt_feedback}")
+            return {"response": "Minha conexão com a força de aceleração falhou (Erro de Filtro/Token). Tente outra pergunta."}
 
     except Exception as e:
-        print(f"Erro: {e}")
-        raise HTTPException(status_code=500, detail="Ocorreu um erro ao processar a velocidade da força de aceleração.")
+        print(f"Erro no servidor: {e}")
+        # Retorna uma resposta amigável em vez de erro 500
+        return {"response": "Estou correndo muito rápido e não entendi. (Erro interno)"}
 
-# Para rodar (dentro da pasta backend/python):
-# uvicorn ai_engine:app --reload
+# Para rodar: uvicorn ai_engine:app --reload

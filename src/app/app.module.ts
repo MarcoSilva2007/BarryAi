@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
-
 import { AppComponent } from './app.component';
-import { routes } from './app-routing.module';
+// 1. Importando a classe correta do arquivo correto
+// Certifique-se que o arquivo se chama realmente 'app-routing.module.ts'
+import { AppRoutingModule } from './app-routing.module'; 
 
 @NgModule({
   declarations: [
@@ -13,7 +13,8 @@ import { routes } from './app-routing.module';
   imports: [
     BrowserModule,
     HttpClientModule,
-    RouterModule.forRoot(routes)
+    // 2. Usando a classe importada
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
