@@ -9,15 +9,7 @@ import { AuthController } from 'src/app/controllers/auth.controller';
   standalone: true, // <--- OBRIGATÓRIO pois sua rota usa loadComponent
   imports: [CommonModule, FormsModule], // <--- OBRIGATÓRIO para inputs funcionarem
   templateUrl: './login.component.html',
-  styles: [`
-    .form-container {
-      max-width: 400px; margin: 2rem auto; padding: 1.5rem;
-      background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    input { width: 100%; padding: 0.6rem; margin: 0.5rem 0; box-sizing: border-box; }
-    button { width: 100%; padding: 0.6rem; background: #3AAED8; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 0.5rem 0; }
-    button:hover { opacity: 0.9; }
-  `]
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   
