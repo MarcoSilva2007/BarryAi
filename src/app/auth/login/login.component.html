@@ -1,14 +1,74 @@
-<div class="form-container">
-  <h2>🔐 Login Barry AI</h2>
-  
-  <label>Email</label>
-  <input [(ngModel)]="emailInput" type="text" placeholder="ex: flash@barry.com" />
+<div class="login-wrapper">
+  <!-- Efeito de fundo animado (opcional) -->
+  <div class="background-shape"></div>
+  <div class="background-shape shape-2"></div>
 
-  <label>Senha</label>
-  <input [(ngModel)]="senhaInput" type="password" placeholder="Sua senha" />
+  <div class="glass-container">
+    
+    <div class="header">
+      <div class="logo-icon">⚡</div>
+      <h2>Barry AI</h2>
+      <p>Bem-vindo de volta!</p>
+    </div>
 
-  <button class="btn-primary" (click)="login()">ENTRAR</button>
-  
-  <!-- Novo Botão de Registro -->
-  <button class="btn-secondary" (click)="irParaRegistro()">CRIAR CONTA NOVA</button>
+    <form (ngSubmit)="login()" class="login-form">
+      
+      <!-- Input Email -->
+      <div class="input-group">
+        <label for="email">Email</label>
+        <div class="input-wrapper">
+          <!-- Ícone de carta -->
+          <i class="fas fa-envelope input-icon"></i>
+          <input 
+            id="email"
+            [(ngModel)]="emailInput" 
+            name="email" 
+            type="email" 
+            placeholder="ex: flash@barry.com" 
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Input Senha -->
+      <div class="input-group">
+        <label for="senha">Senha</label>
+        <div class="input-wrapper">
+          <!-- Ícone de cadeado -->
+          <i class="fas fa-lock input-icon"></i>
+          <input 
+            id="senha"
+            [(ngModel)]="senhaInput" 
+            name="senha" 
+            [type]="mostrarSenha ? 'text' : 'password'" 
+            placeholder="Sua senha" 
+            required
+          />
+          <!-- Botão Olho (Ver/Ocultar) -->
+          <button type="button" class="toggle-password" (click)="toggleSenha()" tabindex="-1">
+            <i [class]="mostrarSenha ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+        <a href="#" class="forgot-pass">Esqueceu a senha?</a>
+      </div>
+
+      <!-- Botões -->
+      <div class="actions">
+        <button type="submit" class="btn-primary" [disabled]="!emailInput || !senhaInput">
+          <span *ngIf="!isLoading">ACESSAR SISTEMA</span>
+          <!-- Loading spinner simples -->
+          <span *ngIf="isLoading" class="spinner"></span> 
+        </button>
+        
+        <div class="divider">
+          <span>ou continue com</span>
+        </div>
+
+        <button type="button" class="btn-secondary" (click)="irParaRegistro()">
+          CRIAR CONTA GRATIS
+        </button>
+      </div>
+
+    </form>
+  </div>
 </div>
