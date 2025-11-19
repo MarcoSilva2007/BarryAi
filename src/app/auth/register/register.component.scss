@@ -9,232 +9,233 @@ $cor-borda: #e0e0e0;
 
 // --- Mixins ---
 @mixin card-shadow {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 .register-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); // Fundo sutil
-    padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); // Fundo sutil
+  padding: 1rem;
 }
 
 .form-container {
-    background-color: $cor-branco;
+  background-color: $cor-branco;
+  width: 100%;
+  max-width: 450px;
+  padding: 2.5rem;
+  border-radius: 20px;
+  @include card-shadow;
+  transition: transform 0.3s ease;
+
+  // Cabeçalho
+  .header-text {
+    text-align: center;
+    margin-bottom: 2rem;
+    
+    h2 {
+      color: $cor-azul;
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0;
+    }
+    p {
+      color: #777;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  // Labels e Inputs
+  label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $cor-texto;
+    margin-bottom: 0.5rem;
+    display: block;
+    margin-left: 5px;
+  }
+
+  .input-wrapper {
+    margin-bottom: 1.2rem;
+
+    input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid $cor-borda;
+      border-radius: 10px;
+      background-color: #fafafa;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      outline: none;
+
+      &:focus {
+        background-color: $cor-branco;
+        border-color: $cor-azul;
+        box-shadow: 0 0 0 4px rgba($cor-azul, 0.1);
+        transform: translateX(5px); // Sutil movimento para a direita indicando atividade
+      }
+
+      &::placeholder {
+        color: #bbb;
+      }
+    }
+  }
+
+  // --- CARD PREMIUM (Checkbox Estilizado) ---
+  .premium-option {
+    margin: 1.5rem 0;
+    border: 2px solid $cor-borda;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+
+    // Estilo quando o usuário passa o mouse
+    &:hover {
+      border-color: lighten($cor-amarelo, 10%);
+      background-color: rgba($cor-amarelo, 0.05);
+    }
+
+    // Estilo quando está ATIVO (Checked)
+    &.active {
+      border-color: $cor-amarelo;
+      background: linear-gradient(to right, rgba($cor-amarelo, 0.1), transparent);
+      box-shadow: 0 4px 12px rgba($cor-amarelo, 0.2);
+
+      .title {
+        color: darken($cor-amarelo, 15%); // Ouro escuro
+      }
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      cursor: pointer;
+      width: 100%;
+
+      // Esconde o checkbox padrão feio, mas mantém funcionalidade
+      input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin-right: 15px;
+        accent-color: $cor-amarelo; // Cor nativa do browser moderna
+        cursor: pointer;
+      }
+
+      .text-content {
+        display: flex;
+        flex-direction: column;
+
+        .title {
+          font-weight: 700;
+          font-size: 1rem;
+          color: $cor-texto;
+          transition: color 0.3s;
+        }
+        
+        .desc {
+          font-size: 0.8rem;
+          color: #888;
+          margin-top: 2px;
+        }
+      }
+    }
+  }
+
+  // --- O BOTÃO "PONTE DE LUZ" (Light Bridge) ---
+  .btn-register {
+    position: relative; // Necessário para o efeito absoluto
     width: 100%;
-    max-width: 450px;
-    padding: 2.5rem;
-    border-radius: 20px;
-    @include card-shadow;
-    transition: transform 0.3s ease;
+    padding: 16px;
+    background: $cor-azul; // Cor base
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    overflow: hidden; // Impede que a luz saia do botão
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba($cor-azul, 0.3);
 
-    // Cabeçalho
-    .header-text {
-        text-align: center;
-        margin-bottom: 2rem;
-
-        h2 {
-            color: $cor-azul;
-            font-size: 2rem;
-            font-weight: 800;
-            margin: 0;
-        }
-
-        p {
-            color: #777;
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-        }
+    span {
+      position: relative;
+      z-index: 2; // Garante que o texto fique acima da luz
     }
 
-    // Labels e Inputs
-    label {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: $cor-texto;
-        margin-bottom: 0.5rem;
-        display: block;
-        margin-left: 5px;
+    // O efeito de luz (pseudo-elemento)
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%; // Começa fora da tela à esquerda
+      width: 100%;
+      height: 100%;
+      // Gradiente inclinado que cria a barra de luz
+      background: linear-gradient(
+        120deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent
+      );
+      transition: none; // Sem transição na volta para resetar rápido
     }
 
-    .input-wrapper {
-        margin-bottom: 1.2rem;
+    // Animação ao passar o mouse
+    &:hover {
+      transform: translateY(-3px); // Levanta o botão
+      box-shadow: 0 8px 25px rgba($cor-azul, 0.5); // Aumenta a sombra
+      background-color: lighten($cor-azul, 5%);
 
-        input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid $cor-borda;
-            border-radius: 10px;
-            background-color: #fafafa;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
-
-            &:focus {
-                background-color: $cor-branco;
-                border-color: $cor-azul;
-                box-shadow: 0 0 0 4px rgba($cor-azul, 0.1);
-                transform: translateX(5px); // Sutil movimento para a direita indicando atividade
-            }
-
-            &::placeholder {
-                color: #bbb;
-            }
-        }
+      &::before {
+        // A luz viaja da esquerda para a direita
+        left: 100%; 
+        transition: 0.7s ease-in-out; // Velocidade do reflexo
+      }
     }
 
-    // --- CARD PREMIUM (Checkbox Estilizado) ---
-    .premium-option {
-        margin: 1.5rem 0;
-        border: 2px solid $cor-borda;
-        border-radius: 12px;
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-
-        // Estilo quando o usuário passa o mouse
-        &:hover {
-            border-color: lighten($cor-amarelo, 10%);
-            background-color: rgba($cor-amarelo, 0.05);
-        }
-
-        // Estilo quando está ATIVO (Checked)
-        &.active {
-            border-color: $cor-amarelo;
-            background: linear-gradient(to right, rgba($cor-amarelo, 0.1), transparent);
-            box-shadow: 0 4px 12px rgba($cor-amarelo, 0.2);
-
-            .title {
-                color: darken($cor-amarelo, 15%); // Ouro escuro
-            }
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            cursor: pointer;
-            width: 100%;
-
-            // Esconde o checkbox padrão feio, mas mantém funcionalidade
-            input[type="checkbox"] {
-                width: 20px;
-                height: 20px;
-                margin-right: 15px;
-                accent-color: $cor-amarelo; // Cor nativa do browser moderna
-                cursor: pointer;
-            }
-
-            .text-content {
-                display: flex;
-                flex-direction: column;
-
-                .title {
-                    font-weight: 700;
-                    font-size: 1rem;
-                    color: $cor-texto;
-                    transition: color 0.3s;
-                }
-
-                .desc {
-                    font-size: 0.8rem;
-                    color: #888;
-                    margin-top: 2px;
-                }
-            }
-        }
+    &:active {
+      transform: scale(0.98);
     }
+  }
 
-    // --- O BOTÃO "PONTE DE LUZ" (Light Bridge) ---
-    .btn-register {
-        position: relative; // Necessário para o efeito absoluto
-        width: 100%;
-        padding: 16px;
-        background: $cor-azul; // Cor base
-        color: white;
-        border: none;
-        border-radius: 50px;
-        font-size: 1.1rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        cursor: pointer;
-        overflow: hidden; // Impede que a luz saia do botão
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba($cor-azul, 0.3);
+  .login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
 
-        span {
-            position: relative;
-            z-index: 2; // Garante que o texto fique acima da luz
-        }
+    a {
+      color: $cor-azul;
+      text-decoration: none;
+      font-weight: 700;
 
-        // O efeito de luz (pseudo-elemento)
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%; // Começa fora da tela à esquerda
-            width: 100%;
-            height: 100%;
-            // Gradiente inclinado que cria a barra de luz
-            background: linear-gradient(120deg,
-                    transparent,
-                    rgba(255, 255, 255, 0.4),
-                    transparent);
-            transition: none; // Sem transição na volta para resetar rápido
-        }
-
-        // Animação ao passar o mouse
-        &:hover {
-            transform: translateY(-3px); // Levanta o botão
-            box-shadow: 0 8px 25px rgba($cor-azul, 0.5); // Aumenta a sombra
-            background-color: lighten($cor-azul, 5%);
-
-            &::before {
-                // A luz viaja da esquerda para a direita
-                left: 100%;
-                transition: 0.7s ease-in-out; // Velocidade do reflexo
-            }
-        }
-
-        &:active {
-            transform: scale(0.98);
-        }
+      &:hover {
+        text-decoration: underline;
+      }
     }
-
-    .login-link {
-        text-align: center;
-        margin-top: 1.5rem;
-        font-size: 0.9rem;
-        color: #666;
-
-        a {
-            color: $cor-azul;
-            text-decoration: none;
-            font-weight: 700;
-
-            &:hover {
-                text-decoration: underline;
-            }
-        }
-    }
+  }
 }
 
 // Responsividade
 @media (max-width: 480px) {
-    .form-container {
-        padding: 1.5rem;
+  .form-container {
+    padding: 1.5rem;
+  }
+  
+  .premium-option .checkbox-container {
+    flex-direction: row;
+    align-items: flex-start;
+    
+    input {
+      margin-top: 4px;
     }
-
-    .premium-option .checkbox-container {
-        flex-direction: row;
-        align-items: flex-start;
-
-        input {
-            margin-top: 4px;
-        }
-    }
+  }
 }
