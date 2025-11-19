@@ -1,25 +1,59 @@
-<div class="form-container">
-  <h2>🔐 Login Barry AI</h2>
-  
-  <label>Email</label>
-  <!-- O atributo name="email" é OBRIGATÓRIO quando se usa ngModel -->
-  <input 
-    [(ngModel)]="emailInput" 
-    name="email" 
-    type="text" 
-    placeholder="ex: flash@barry.com" 
-  />
+<div class="login-wrapper">
+  <form class="form-container" (ngSubmit)="login()">
+    
+    <div class="header">
+      <h2>🔐 Login Barry AI</h2>
+      <p class="subtitle">Bem-vindo de volta, velocista!</p>
+    </div>
+    
+    <!-- Grupo Email -->
+    <div class="input-group">
+      <label for="email">Email</label>
+      <div class="input-wrapper">
+        <!-- Ícone (pode substituir por <i class="fa fa-envelope"></i>) -->
+        <span class="icon">✉️</span>
+        <input 
+          id="email"
+          [(ngModel)]="emailInput" 
+          name="email" 
+          type="email" 
+          placeholder="ex: flash@barry.com" 
+          autocomplete="email"
+          required
+        />
+      </div>
+    </div>
 
-  <label>Senha</label>
-  <!-- O atributo name="senha" é OBRIGATÓRIO -->
-  <input 
-    [(ngModel)]="senhaInput" 
-    name="senha" 
-    type="password" 
-    placeholder="Sua senha" 
-  />
+    <!-- Grupo Senha -->
+    <div class="input-group">
+      <label for="senha">Senha</label>
+      <div class="input-wrapper">
+        <span class="icon">🔒</span>
+        <input 
+          id="senha"
+          [(ngModel)]="senhaInput" 
+          name="senha" 
+          type="password" 
+          placeholder="Sua senha secreta" 
+          autocomplete="current-password"
+          required
+        />
+      </div>
+    </div>
 
-  <button class="btn-primary" (click)="login()">ENTRAR</button>
-  
-  <button class="btn-secondary" (click)="irParaRegistro()">CRIAR CONTA NOVA</button>
+    <!-- Link de Ajuda -->
+    <div class="actions">
+      <a href="#" class="forgot-pass">Esqueceu a senha?</a>
+    </div>
+
+    <!-- Botões -->
+    <button type="submit" class="btn-primary">
+      ENTRAR ⚡
+    </button>
+    
+    <button type="button" class="btn-secondary" (click)="irParaRegistro()">
+      CRIAR CONTA NOVA
+    </button>
+
+  </form>
 </div>
