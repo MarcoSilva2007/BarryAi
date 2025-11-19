@@ -1,206 +1,276 @@
-// --- Variáveis de Cores ---
-$cor-azul: #007BFF;
-$cor-azul-escuro: #0056b3;
-$cor-amarelo: #FFD700; 
-$cor-amarelo-hover: #e6c200;
-$cor-branco: #ffffff;
-$cor-preto: #333333;
-$cor-texto-suave: #666;
-$cor-cinza-claro: #f4f6f9;
-$cor-borda: #e1e1e1;
+// Variáveis de Cores (Fácil de mudar o tema aqui)
+$primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$bg-color: #f0f2f5;
+$text-dark: #333;
+$text-light: #666;
+$glass-bg: rgba(255, 255, 255, 0.85);
+$border-color: rgba(255, 255, 255, 0.5);
 
-// --- Mixins ---
-@mixin shadow-suave {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+// Importando fonte bonita
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:host {
+    display: block;
+    font-family: 'Poppins', sans-serif;
 }
 
-@mixin transition-padrao {
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-// --- Container Geral (Fundo da página opcional) ---
 .login-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; // Garante centralização vertical na tela
-    background-color: #f0f2f5; // Fundo neutro para destacar o card
-    padding: 1rem;
+    min-height: 100vh;
+    background: $primary-gradient;
+    position: relative;
+    overflow: hidden;
+
+    // Formas flutuantes no fundo (decoração)
+    .background-shape {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        top: 10%;
+        left: 20%;
+        animation: float 6s ease-in-out infinite;
+
+        &.shape-2 {
+            top: auto;
+            bottom: 15%;
+            left: auto;
+            right: 20%;
+            width: 300px;
+            height: 300px;
+            animation-delay: -3s;
+        }
+    }
 }
 
-// --- O Card do Formulário ---
-.form-container {
-    background-color: $cor-branco;
+.glass-container {
+    background: $glass-bg;
+    backdrop-filter: blur(10px); // O efeito de vidro fosco
+    padding: 3rem 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    border: 1px solid $border-color;
     width: 100%;
     max-width: 420px;
-    padding: 3rem 2.5rem;
-    border-radius: 24px; // Mais arredondado
-    display: flex;
-    flex-direction: column;
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    @include shadow-suave;
-    
-    // Animação de entrada (Slide Up)
-    animation: slideUp 0.5s ease-out forwards;
-    opacity: 0;
-    transform: translateY(20px);
+    z-index: 10; // Fica acima das formas do fundo
+    animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 
     .header {
         text-align: center;
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
+
+        .logo-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
 
         h2 {
-            color: $cor-azul;
-            font-size: 2rem;
-            font-weight: 800;
+            color: $text-dark;
             margin: 0;
-            letter-spacing: -0.5px;
+            font-weight: 700;
+            font-size: 1.8rem;
         }
 
-        .subtitle {
-            margin-top: 0.5rem;
-            color: $cor-texto-suave;
+        p {
+            color: $text-light;
             font-size: 0.95rem;
+            margin-top: 5px;
         }
     }
+}
 
-    // --- Estilo dos Inputs com Ícones ---
-    .input-group {
-        margin-bottom: 1.5rem;
+.input-group {
+    margin-bottom: 1.5rem;
 
-        label {
-            display: block;
-            color: $cor-preto;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            margin-left: 4px;
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: $text-dark;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .input-wrapper {
+        position: relative;
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.1rem;
+            transition: color 0.3s;
         }
 
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
+        input {
+            width: 100%;
+            padding: 14px 45px; // Espaço para os ícones
+            border: 2px solid transparent;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-sizing: border-box; // Importante para não estourar
 
-            // O ícone posicionado
-            .icon {
-                position: absolute;
-                left: 16px;
-                font-size: 1.2rem;
-                pointer-events: none; // Permite clicar "através" do ícone
-                opacity: 0.5;
-                transition: opacity 0.3s;
-            }
-
-            input {
-                width: 100%;
-                padding: 14px 16px 14px 48px; // Padding esquerdo maior para o ícone
-                border: 2px solid $cor-cinza-claro;
-                border-radius: 12px;
-                background-color: $cor-cinza-claro;
-                font-size: 1rem;
-                color: $cor-preto;
+            &:focus {
+                background: #fff;
+                border-color: #764ba2; // Cor roxa ao focar
+                box-shadow: 0 4px 15px rgba(118, 75, 162, 0.1);
                 outline: none;
-                @include transition-padrao;
-
-                &::placeholder {
-                    color: #bbb;
-                    font-weight: 400;
-                }
-
-                // Estados do Input
-                &:hover {
-                    background-color: darken($cor-cinza-claro, 2%);
-                }
-
-                &:focus {
-                    background-color: $cor-branco;
-                    border-color: $cor-azul;
-                    box-shadow: 0 0 0 4px rgba($cor-azul, 0.1);
-                    
-                    // Truque: Quando input focado, afeta o irmão anterior? 
-                    // CSS puro não faz "previous sibling selector", 
-                    // mas visualmente o input brilha, o que já é ótimo.
-                }
             }
-            
-            // Quando o input dentro do wrapper tem foco, mude a cor do ícone (se usar SVG inline, use fill)
-            &:focus-within .icon {
-                opacity: 1; 
-                filter: drop-shadow(0 0 2px $cor-azul);
+
+            // Quando input tem foco, o ícone muda de cor também
+            &:focus+.input-icon,
+            &:focus~.input-icon {
+                color: #764ba2;
             }
         }
-    }
 
-    // Link "Esqueceu a senha"
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: -0.5rem;
-        margin-bottom: 1.5rem;
-
-        .forgot-pass {
-            font-size: 0.85rem;
-            color: $cor-azul;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            padding: 5px;
 
             &:hover {
-                color: $cor-azul-escuro;
-                text-decoration: underline;
+                color: #555;
             }
         }
     }
 
-    // --- Botões ---
-    button {
-        width: 100%;
-        padding: 16px;
-        border: none;
-        border-radius: 50px;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        letter-spacing: 0.5px;
-        @include transition-padrao;
-        position: relative;
-        overflow: hidden;
+    .forgot-pass {
+        display: inline-block;
+        margin-top: 0.8rem;
+        font-size: 0.85rem;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        float: right;
 
-        &:active {
-            transform: scale(0.98);
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.actions {
+    margin-top: 2rem;
+
+    .btn-primary {
+        width: 100%;
+        padding: 15px;
+        background: $primary-gradient;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            filter: grayscale(100%);
         }
     }
 
-    .btn-primary {
-        // Gradiente sutil para dar ideia de tecnologia/energia
-        background: linear-gradient(135deg, $cor-azul 0%, darken($cor-azul, 5%) 100%);
-        color: $cor-branco;
-        margin-bottom: 1rem;
-        box-shadow: 0 4px 15px rgba($cor-azul, 0.3);
+    .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
 
-        &:hover {
-            background: linear-gradient(135deg, lighten($cor-azul, 5%) 0%, $cor-azul 100%);
-            box-shadow: 0 6px 20px rgba($cor-azul, 0.5);
-            transform: translateY(-2px);
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        span {
+            background: $glass-bg; // Mesma cor do fundo do vidro
+            padding: 0 15px;
+            color: #999;
+            font-size: 0.8rem;
+            position: relative;
+            z-index: 1;
         }
     }
 
     .btn-secondary {
-        background-color: transparent;
-        color: $cor-preto;
-        border: 2px solid $cor-amarelo;
-        
+        width: 100%;
+        padding: 14px;
+        background: transparent;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        color: $text-light;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+
         &:hover {
-            background-color: $cor-amarelo;
-            box-shadow: 0 4px 15px rgba($cor-amarelo, 0.4);
-            transform: translateY(-2px);
+            border-color: #b0b0b0;
+            background: rgba(0, 0, 0, 0.02);
+            color: $text-dark;
         }
     }
 }
 
-// Keyframes para animação de entrada
+// Spinner Animation
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
 @keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
     to {
         opacity: 1;
         transform: translateY(0);

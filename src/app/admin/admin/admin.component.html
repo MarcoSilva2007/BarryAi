@@ -1,81 +1,78 @@
-  <!-- Sidebar Lateral -->
+<div class="admin-layout">
+  <!-- Sidebar (Igual) -->
   <aside class="sidebar">
-    <div class="brand">
-      <span>⚡</span> Admin
-    </div>
+    <div class="brand"><span>⚡</span> Admin</div>
     <nav>
-      <a href="#" class="active">📊 Dashboard</a>
-      <a href="#">👥 Usuários</a>
-      <a href="#">⚙️ Configurações</a>
+      <a href="#" class="active">📊 Dashboard Real</a>
     </nav>
     <div class="logout-area">
-      <button (click)="sair()">Sair do Sistema</button>
+      <button (click)="sair()">Sair</button>
     </div>
   </aside>
 
-  <!-- Conteúdo Principal -->
   <main class="content">
     <header>
       <h2>Torre de Vigilância</h2>
-      <div class="user-info">Admin Logado 🟢</div>
+      <div class="user-info">Banco de Dados: MongoDB 🟢</div>
     </header>
 
-    <!-- Cartões de Estatísticas -->
+    <!-- Cartões com DADOS REAIS -->
     <div class="stats-grid">
       <div class="card">
         <h3>Usuários Totais</h3>
-        <div class="number">1,245</div>
-        <div class="trend up">▲ 12% essa semana</div>
+        <div class="number">{{ stats.total }}</div>
       </div>
       <div class="card">
-        <h3>Mensagens com Barry</h3>
-        <div class="number">58,900</div>
-        <div class="trend up">▲ Velocidade Máxima</div>
+        <h3>Assinantes Premium</h3>
+        <div class="number ok">{{ stats.premium }}</div>
       </div>
       <div class="card">
-        <h3>Status do Servidor</h3>
-        <div class="number ok">ONLINE</div>
-        <div class="trend">Porta 8000</div>
+        <h3>Plano Básico</h3>
+        <div class="number">{{ stats.basic }}</div>
       </div>
       <div class="card warning">
-        <h3>Erros de API</h3>
-        <div class="number">3</div>
-        <div class="trend down">▼ Controlado</div>
+        <h3>Admins</h3>
+        <div class="number">{{ stats.admin }}</div>
       </div>
     </div>
 
-    <!-- Tabela Recente -->
+    <!-- Tabela Dinâmica -->
     <div class="recent-users">
-      <h3>Últimos Cadastros</h3>
-      <table>
+      <h3>Usuários Cadastrados no Banco</h3>
+      
+      <div *ngIf="carregando">Carregando dados do MongoDB...</div>
+
+      <table *ngIf="!carregando">
         <thead>
           <tr>
             <th>Nome</th>
             <th>Email</th>
             <th>Tipo</th>
-            <th>Status</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Eobard Thawne</td>
-            <td>reverso@flash.com</td>
-            <td><span class="tag premium">Premium</span></td>
-            <td>Ativo</td>
-          </tr>
-          <tr>
-            <td>Iris West</td>
-            <td>iris@centralcity.com</td>
-            <td><span class="tag basic">Basic</span></td>
-            <td>Ativo</td>
-          </tr>
-          <tr>
-            <td>Cisco Ramon</td>
-            <td>vibe@star.labs</td>
-            <td><span class="tag admin">Admin</span></td>
-            <td>Ativo</td>
+          <!-- O *ngFor aqui cria uma linha para cada usuário real -->
+          <tr *ngFor="let user of usuarios">
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <!-- Classes dinâmicas para cor da tag -->
+              <span class="tag" 
+                    [class.premium]="user.tipo === 'premium'"
+                    [class.basic]="user.tipo === 'basic'"
+                    [class.admin]="user.tipo === 'admin'">
+                {{ user.tipo | uppercase }}
+              </span>
+            </td>
+            <td>
+              <button (click)="deletarUsuario(user._id)" style="color: red; border: none; background: none; cursor: pointer;">
+                🗑️ Excluir
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
   </main>
+</div>
