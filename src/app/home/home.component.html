@@ -1,0 +1,19 @@
+<div class="home">
+  <h1>🧠 BarryAI</h1>
+  <p>Sua IA amigável, clara e acessível.</p>
+  <p>Faça perguntas sem medo — respostas diretas, sem jargões!</p>
+
+  <div class="demo">
+    <h3>Experimente (1 pergunta grátis!)</h3>
+    <input #pergunta type="text" placeholder="Ex: Como organizar minhas tarefas?" />
+    <button (click)="enviarDemo(pergunta.value)">Enviar</button>
+    <div *ngIf="respostaDemo" class="resposta">
+      {{ respostaDemo }}
+    </div>
+  </div>
+
+  <div class="acoes">
+    <button routerLink="/register" class="btn-primary">Criar Conta</button>
+    <button routerLink="/login" class="btn-outline">Entrar</button>
+  </div>
+</div>

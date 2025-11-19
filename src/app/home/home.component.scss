@@ -1,0 +1,102 @@
+:host {
+  display: block;
+  text-align: center;
+  padding: 2rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+  color: #3AAED8;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 1.1rem;
+  color: #37474F;
+  margin: 1rem 0;
+  line-height: 1.6;
+}
+
+.demo {
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
+.demo h3 {
+  color: #37474F;
+  margin-bottom: 1rem;
+}
+
+.demo input {
+  padding: 0.7rem;
+  width: 70%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+.demo button {
+  padding: 0.7rem 1.5rem;
+  background-color: #3AAED8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.demo button:hover {
+  opacity: 0.9;
+}
+
+.resposta {
+  margin-top: 1.5rem;
+  padding: 1.2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  border-left: 4px solid #3AAED8;
+}
+
+.acoes {
+  margin-top: 3rem;
+}
+
+.btn-primary {
+  background-color: #3AAED8;
+  color: white;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  margin: 0.5rem;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #3AAED8;
+  border: 2px solid #3AAED8;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  margin: 0.5rem;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background-color: rgba(58, 174, 216, 0.1);
+}
