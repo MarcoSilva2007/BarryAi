@@ -1,19 +1,41 @@
-<div class="form-container">
-  <h2>Criar Conta</h2>
-  
-  <label>Nome</label>
-  <input [(ngModel)]="nome" type="text" placeholder="Seu Nome" />
+<div class="register-wrapper">
+  <div class="form-container">
+    <div class="header-text">
+      <h2>🚀 Criar Conta</h2>
+      <p>Junte-se ao Barry AI hoje mesmo.</p>
+    </div>
+    
+    <label>Nome Completo</label>
+    <div class="input-wrapper">
+      <input [(ngModel)]="nome" type="text" placeholder="Como devemos te chamar?" />
+    </div>
 
-  <label>Email</label>
-  <input [(ngModel)]="email" type="email" placeholder="Seu Email" />
+    <label>Email</label>
+    <div class="input-wrapper">
+      <input [(ngModel)]="email" type="email" placeholder="seu@email.com" />
+    </div>
 
-  <label>Senha</label>
-  <input [(ngModel)]="senha" type="password" placeholder="Sua Senha" />
+    <label>Senha</label>
+    <div class="input-wrapper">
+      <input [(ngModel)]="senha" type="password" placeholder="Crie uma senha forte" />
+    </div>
 
-  <label>
-    <!-- Checkbox para virar cliente Plus -->
-    <input [(ngModel)]="isPlus" type="checkbox" /> Quero ser Premium (Plus)
-  </label>
+    <!-- Área do Checkbox Premium (Estilizada como Card) -->
+    <div class="premium-option" [class.active]="isPlus">
+      <label class="checkbox-container">
+        <input [(ngModel)]="isPlus" type="checkbox" />
+        <div class="text-content">
+          <span class="title">🌟 Quero ser Premium (Plus)</span>
+          <span class="desc">Acesso a recursos exclusivos e velocidade máxima.</span>
+        </div>
+      </label>
+    </div>
 
-  <button (click)="register()">Registrar</button>
+    <!-- Botão com Efeito "Ponte de Luz" -->
+    <button class="btn-register" (click)="register()">
+      <span>REGISTRAR AGORA</span>
+    </button>
+
+    <p class="login-link">Já tem conta? <a href="#">Entrar</a></p>
+  </div>
 </div>
