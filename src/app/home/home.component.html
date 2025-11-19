@@ -1,19 +1,26 @@
-<div class="home">
-  <h1>🧠 BarryAI</h1>
-  <p>Sua IA amigável, clara e acessível.</p>
-  <p>Faça perguntas sem medo — respostas diretas, sem jargões!</p>
+<div class="home-wrapper">
+  <div class="hero">
+    <div class="icon">⚡</div>
+    <h1>Barry AI</h1>
+    <p class="subtitle">A Inteligência Artificial mais rápida viva.</p>
+    
+    <div class="actions">
+      <!-- Se NÃO estiver logado -->
+      <ng-container *ngIf="!isLogged">
+        <button (click)="navegar('/login')" class="btn-primary">ENTRAR</button>
+        <button (click)="navegar('/register')" class="btn-outline">CRIAR CONTA</button>
+      </ng-container>
 
-  <div class="demo">
-    <h3>Experimente (1 pergunta grátis!)</h3>
-    <input #pergunta type="text" placeholder="Ex: Como organizar minhas tarefas?" />
-    <button (click)="enviarDemo(pergunta.value)">Enviar</button>
-    <div *ngIf="respostaDemo" class="resposta">
-      {{ respostaDemo }}
+      <!-- Se JÁ estiver logado -->
+      <ng-container *ngIf="isLogged">
+        <p class="welcome-back">Olá de volta, {{ userName }}!</p>
+        <button (click)="navegar('/chat')" class="btn-primary">⚡ ACESSAR CHAT</button>
+        <button (click)="logout()" class="btn-text">Sair</button>
+      </ng-container>
     </div>
   </div>
-
-  <div class="acoes">
-    <button routerLink="/register" class="btn-primary">Criar Conta</button>
-    <button routerLink="/login" class="btn-outline">Entrar</button>
-  </div>
+  
+  <footer class="footer">
+    <p>© 2025 Central City Tech • Powered by Speed Force</p>
+  </footer>
 </div>
