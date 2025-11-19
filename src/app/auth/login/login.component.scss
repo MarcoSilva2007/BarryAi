@@ -1,0 +1,115 @@
+// --- Variáveis de Cores (Paleta Solicitada) ---
+$cor-azul: #007BFF; // Tecnologia e Confiança
+$cor-amarelo: #FFD700; // Energia e Destaque
+$cor-branco: #ffffff; // Fundo
+$cor-preto: #333333; // Texto (Preto suave para não cansar a vista)
+$cor-cinza-claro: #f5f5f5;
+$cor-borda: #ddd;
+
+// --- Mixin para sombras suaves ---
+@mixin shadow-suave {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+// --- Estilos do Formulário ---
+.form-container {
+    background-color: $cor-branco;
+    width: 100%;
+    max-width: 400px; // Largura ideal para leitura
+    margin: 2rem auto; // Centraliza na tela se estiver num container maior
+    padding: 2.5rem;
+    border-radius: 16px; // Bordas bem arredondadas (moderno)
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    @include shadow-suave;
+
+    // Título
+    h2 {
+        color: $cor-azul;
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    // Labels (Rótulos)
+    label {
+        color: $cor-preto;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        margin-left: 4px; // Alinha visualmente com o padding do input
+    }
+
+    // Inputs (Campos de texto)
+    input {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 1.2rem; // Espaço entre os campos
+        border: 2px solid $cor-borda;
+        border-radius: 8px;
+        background-color: $cor-cinza-claro;
+        font-size: 1rem;
+        outline: none;
+        transition: all 0.3s ease;
+
+        &::placeholder {
+            color: #aaa;
+        }
+
+        // Efeito de Foco (UX: Mostra onde o usuário está digitando)
+        &:focus {
+            background-color: $cor-branco;
+            border-color: $cor-azul;
+            box-shadow: 0 0 0 4px rgba($cor-azul, 0.15); // Halo azul suave
+        }
+    }
+
+    // --- Estilização Geral dos Botões ---
+    button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 50px; // Botões arredondados (Pill shape) são tendência
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s;
+        margin-top: 0.5rem;
+
+        // Efeito de clique (Feedback tátil)
+        &:active {
+            transform: scale(0.96);
+        }
+    }
+
+    // Botão Primário (ENTRAR) - Azul
+    .btn-primary {
+        background-color: $cor-azul;
+        color: $cor-branco;
+        margin-top: 1rem; // Separação maior dos inputs
+
+        &:hover {
+            background-color: darken($cor-azul, 10%); // Azul um pouco mais escuro
+            box-shadow: 0 6px 20px rgba($cor-azul, 0.4); // Sombra brilhante
+            transform: translateY(-2px); // Levanta o botão
+        }
+    }
+
+    // Botão Secundário (CRIAR CONTA) - Amarelo
+    .btn-secondary {
+        background-color: $cor-amarelo;
+        color: $cor-preto; // Preto no amarelo para contraste alto
+        margin-top: 1rem;
+
+        &:hover {
+            background-color: darken($cor-amarelo, 5%);
+            box-shadow: 0 6px 20px rgba($cor-amarelo, 0.5);
+            transform: translateY(-2px);
+        }
+    }
+}
