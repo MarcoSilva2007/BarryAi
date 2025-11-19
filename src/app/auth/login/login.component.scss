@@ -1,219 +1,115 @@
-// --- Variáveis de Cores ---
-$cor-azul: #007BFF;
-$cor-azul-escuro: #0056b3;
-$cor-amarelo: #FFD700;
-$cor-amarelo-hover: #e6c200;
-$cor-branco: #ffffff;
-$cor-preto: #333333;
-$cor-texto-suave: #666;
-$cor-cinza-claro: #f4f6f9;
-$cor-borda: #e1e1e1;
+// --- Variáveis de Cores (Paleta Solicitada) ---
+$cor-azul: #007BFF; // Tecnologia e Confiança
+$cor-amarelo: #FFD700; // Energia e Destaque
+$cor-branco: #ffffff; // Fundo
+$cor-preto: #333333; // Texto (Preto suave para não cansar a vista)
+$cor-cinza-claro: #f5f5f5;
+$cor-borda: #ddd;
 
-// --- Mixins ---
+// --- Mixin para sombras suaves ---
 @mixin shadow-suave {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-@mixin transition-padrao {
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-// --- Container Geral (Fundo da página opcional) ---
-.login-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; // Garante centralização vertical na tela
-    background-color: #f0f2f5; // Fundo neutro para destacar o card
-    padding: 1rem;
-}
-
-// --- O Card do Formulário ---
+// --- Estilos do Formulário ---
 .form-container {
     background-color: $cor-branco;
     width: 100%;
-    max-width: 420px;
-    padding: 3rem 2.5rem;
-    border-radius: 24px; // Mais arredondado
+    max-width: 400px; // Largura ideal para leitura
+    margin: 2rem auto; // Centraliza na tela se estiver num container maior
+    padding: 2.5rem;
+    border-radius: 16px; // Bordas bem arredondadas (moderno)
     display: flex;
     flex-direction: column;
-    font-family: 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     @include shadow-suave;
 
-    // Animação de entrada (Slide Up)
-    animation: slideUp 0.5s ease-out forwards;
-    opacity: 0;
-    transform: translateY(20px);
-
-    .header {
+    // Título
+    h2 {
+        color: $cor-azul;
         text-align: center;
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
 
-        h2 {
-            color: $cor-azul;
-            font-size: 2rem;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -0.5px;
+    // Labels (Rótulos)
+    label {
+        color: $cor-preto;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        margin-left: 4px; // Alinha visualmente com o padding do input
+    }
+
+    // Inputs (Campos de texto)
+    input {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 1.2rem; // Espaço entre os campos
+        border: 2px solid $cor-borda;
+        border-radius: 8px;
+        background-color: $cor-cinza-claro;
+        font-size: 1rem;
+        outline: none;
+        transition: all 0.3s ease;
+
+        &::placeholder {
+            color: #aaa;
         }
 
-        .subtitle {
-            margin-top: 0.5rem;
-            color: $cor-texto-suave;
-            font-size: 0.95rem;
+        // Efeito de Foco (UX: Mostra onde o usuário está digitando)
+        &:focus {
+            background-color: $cor-branco;
+            border-color: $cor-azul;
+            box-shadow: 0 0 0 4px rgba($cor-azul, 0.15); // Halo azul suave
         }
     }
 
-    // --- Estilo dos Inputs com Ícones ---
-    .input-group {
-        margin-bottom: 1.5rem;
-
-        label {
-            display: block;
-            color: $cor-preto;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            margin-left: 4px;
-        }
-
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-
-            // O ícone posicionado
-            .icon {
-                position: absolute;
-                left: 16px;
-                font-size: 1.2rem;
-                pointer-events: none; // Permite clicar "através" do ícone
-                opacity: 0.5;
-                transition: opacity 0.3s;
-            }
-
-            input {
-                width: 100%;
-                padding: 14px 16px 14px 48px; // Padding esquerdo maior para o ícone
-                border: 2px solid $cor-cinza-claro;
-                border-radius: 12px;
-                background-color: $cor-cinza-claro;
-                font-size: 1rem;
-                color: $cor-preto;
-                outline: none;
-                @include transition-padrao;
-
-                &::placeholder {
-                    color: #bbb;
-                    font-weight: 400;
-                }
-
-                // Estados do Input
-                &:hover {
-                    background-color: darken($cor-cinza-claro, 2%);
-                }
-
-                &:focus {
-                    background-color: $cor-branco;
-                    border-color: $cor-azul;
-                    box-shadow: 0 0 0 4px rgba($cor-azul, 0.1);
-
-                    // Truque: Quando input focado, afeta o irmão anterior? 
-                    // CSS puro não faz "previous sibling selector", 
-                    // mas visualmente o input brilha, o que já é ótimo.
-                }
-            }
-
-            // Quando o input dentro do wrapper tem foco, mude a cor do ícone (se usar SVG inline, use fill)
-            &:focus-within .icon {
-                opacity: 1;
-                filter: drop-shadow(0 0 2px $cor-azul);
-            }
-        }
-    }
-
-    // Link "Esqueceu a senha"
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: -0.5rem;
-        margin-bottom: 1.5rem;
-
-        .forgot-pass {
-            font-size: 0.85rem;
-            color: $cor-azul;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-
-            &:hover {
-                color: $cor-azul-escuro;
-                text-decoration: underline;
-            }
-        }
-    }
-
-    // --- Botões ---
+    // --- Estilização Geral dos Botões ---
     button {
         width: 100%;
-        padding: 16px;
+        padding: 14px;
         border: none;
-        border-radius: 50px;
+        border-radius: 50px; // Botões arredondados (Pill shape) são tendência
         font-size: 1rem;
         font-weight: 700;
         cursor: pointer;
-        letter-spacing: 0.5px;
-        @include transition-padrao;
-        position: relative;
-        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s;
+        margin-top: 0.5rem;
 
+        // Efeito de clique (Feedback tátil)
         &:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
         }
     }
 
+    // Botão Primário (ENTRAR) - Azul
     .btn-primary {
-        // Gradiente sutil para dar ideia de tecnologia/energia
-        background: linear-gradient(135deg, $cor-azul 0%, darken($cor-azul, 5%) 100%);
+        background-color: $cor-azul;
         color: $cor-branco;
-        margin-bottom: 1rem;
-        box-shadow: 0 4px 15px rgba($cor-azul, 0.3);
+        margin-top: 1rem; // Separação maior dos inputs
 
         &:hover {
-            background: linear-gradient(135deg, lighten($cor-azul, 5%) 0%, $cor-azul 100%);
-            box-shadow: 0 6px 20px rgba($cor-azul, 0.5);
-            transform: translateY(-2px);
+            background-color: darken($cor-azul, 10%); // Azul um pouco mais escuro
+            box-shadow: 0 6px 20px rgba($cor-azul, 0.4); // Sombra brilhante
+            transform: translateY(-2px); // Levanta o botão
         }
     }
 
+    // Botão Secundário (CRIAR CONTA) - Amarelo
     .btn-secondary {
-        background-color: transparent;
-        color: $cor-preto;
-        border: 2px solid $cor-amarelo;
+        background-color: $cor-amarelo;
+        color: $cor-preto; // Preto no amarelo para contraste alto
+        margin-top: 1rem;
 
         &:hover {
-            background-color: $cor-amarelo;
-            box-shadow: 0 4px 15px rgba($cor-amarelo, 0.4);
+            background-color: darken($cor-amarelo, 5%);
+            box-shadow: 0 6px 20px rgba($cor-amarelo, 0.5);
             transform: translateY(-2px);
         }
-    }
-}
-
-// Keyframes para animação de entrada
-@keyframes slideUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-// Responsividade para Mobile
-@media (max-width: 480px) {
-    .form-container {
-        padding: 2rem 1.5rem;
-    }
-
-    h2 {
-        font-size: 1.5rem;
     }
 }
