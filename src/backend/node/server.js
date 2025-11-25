@@ -24,6 +24,16 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema);
 
+
+const MessageSchema = new mongoose.Schema({
+    userId: { type: String, required: true }, // Quem conversou?
+    sender: { type: String, required: true }, // 'user' ou 'ai'
+    text: { type: String, required: true },   // O que foi dito
+    timestamp: { type: Date, default: Date.now } // Quando
+});
+
+const Message = mongoose.model('Message', MessageSchema);
+
 // ==========================================
 // 4. ROTAS DA API
 // ==========================================
@@ -79,6 +89,27 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ message: 'Erro interno', error });
     }
 });
+
+app.post('/api/messages', async (req, res) => {
+    try {
+        const { userId, sender, text } = req.body;
+        const newMessage = new Message({ userId, sender, text });
+        await newMessage.save();
+        res.status(201).json(newMessage);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao salvar mensagem' });
+    }
+});
+
+app.get('/api/messages/:userId', async (req, res) => {
+    try {
+        // Pega as mensagens desse usuário, ordenadas por data
+        const messages = await Message.find({ userId: req.params.userId }).sort({ timestamp: 1 });
+        res.json(messages);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar histórico' });
+    }
+});''
 
 // --- ADMIN: LISTAR USUÁRIOS (Faltava arrumar isso) ---
 app.get('/api/users', async (req, res) => {

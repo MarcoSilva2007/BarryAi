@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http'; 
 import { FormsModule } from '@angular/forms'; 
@@ -6,9 +6,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-// ... outros imports
 
-import { HomeComponent } from './home/home.component';
 
 
 @NgModule({
@@ -21,7 +19,9 @@ import { HomeComponent } from './home/home.component';
     HttpClientModule,
     FormsModule,
     AppRoutingModule,
-    MarkdownModule.forRoot(), 
+    MarkdownModule.forRoot({
+      sanitize: SecurityContext.NONE 
+    }), 
     RouterModule.forRoot([]),
   ],
   providers: [],
