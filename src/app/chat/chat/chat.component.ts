@@ -26,21 +26,21 @@ export class ChatComponent implements AfterViewChecked, OnInit {
 
   constructor(private ia: IAController) {}
 
-  // 1. Carrega o histórico ao abrir a tela
   ngOnInit() {
     this.carregando = true;
     this.ia.carregarHistorico().subscribe({
-      next: (msgsDoBanco) => {
-        // Converte do formato do banco para o formato da tela
-        this.mensagens = msgsDoBanco.map(m => ({
-          texto: m.text,
-          tipo: m.sender === 'user' ? 'user' : 'ai'
-        }));
-        this.carregando = false;
-        // Se estiver vazio, adiciona boas vindas
-        if (this.mensagens.length === 0) {
-            this.mensagens.push({ texto: "**Olá!** Sou o Barry AI. Vamos correr?", tipo: 'ai' });
+      // ADICIONADO ': any' PARA PARAR O ERRO
+      next: (msgsDoBanco: any) => {
+        if (msgsDoBanco && msgsDoBanco.length > 0) {
+          // ADICIONADO ': any' PARA PARAR O ERRO
+          this.mensagens = msgsDoBanco.map((m: any) => ({
+            texto: m.text,
+            tipo: m.sender === 'user' ? 'user' : 'ai'
+          }));
+        } else {
+           this.mensagens.push({ texto: "**Olá!** Sou o Barry AI. Vamos correr?", tipo: 'ai' });
         }
+        this.carregando = false;
       },
       error: () => this.carregando = false
     });
@@ -58,25 +58,22 @@ export class ChatComponent implements AfterViewChecked, OnInit {
     } catch(err) { }
   }
 
- enviar(): void {
+  enviar(): void {
     if (!this.textoInput.trim()) return;
 
     const msg = this.textoInput;
-    
-    // 1. Guarda o estado ATUAL do histórico (antes de adicionar a nova msg do user)
-    // Isso é importante para não enviar a própria pergunta duplicada no histórico
-    const historicoParaEnviar = [...this.mensagens]; 
+    const historicoParaEnviar = [...this.mensagens]; // Copia o estado atual
 
-    // Adiciona na tela e no banco
+    // 1. Mostra na tela
     this.mensagens.push({ texto: msg, tipo: 'user' });
     this.ia.salvarNoBanco(msg, 'user');
     
     this.textoInput = '';
     this.carregando = true;
 
-    // 2. Passa o histórico junto na chamada
+    // 2. Envia para o Python
     this.ia.perguntar(msg, historicoParaEnviar).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.mensagens.push({ texto: res.resposta, tipo: 'ai' });
         this.ia.salvarNoBanco(res.resposta, 'ai');
         this.carregando = false;

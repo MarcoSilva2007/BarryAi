@@ -3,26 +3,22 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { AuthController } from './auth.controller'; // Importar para pegar o ID do usuário
 
-// ... imports continuam iguais
-
 @Injectable({
   providedIn: 'root'
 })
 export class IAController {
 
-  private pythonUrl = 'http://localhost:8000';
-  private nodeUrl = 'http://localhost:5000/api';
+  private pythonUrl = 'http://localhost:8000'; // Inteligência
+  private nodeUrl = 'http://localhost:5000/api'; // Banco de Dados
 
   constructor(private http: HttpClient, private auth: AuthController) {}
 
-  // 1. Agora aceita o ARRAY de mensagens anteriores
-  perguntar(perguntaAtual: string, historicoAngular: any[]): Observable<any> {
+  // 1. ATUALIZADO: Agora aceita histórico
+  perguntar(perguntaAtual: string, historicoAngular: any[] = []): Observable<any> {
     
-    // 2. Prepara o histórico para o Python
-    // Pegamos as últimas 10 mensagens para não ficar muito pesado
+    // Converte o histórico do Angular para o Python
     const historicoFormatado = historicoAngular.slice(-10).map(msg => {
       return {
-        // O Google usa 'model' para a IA, e nós usamos 'ai'. Temos que converter.
         role: msg.tipo === 'user' ? 'user' : 'model', 
         parts: [msg.texto]
       };
@@ -37,10 +33,12 @@ export class IAController {
       map(dados => { return { resposta: dados.response }; })
     );
   }
-  // 2. Salva mensagem no MongoDB (Node)
+
+  // 2. NOVA FUNÇÃO: Salvar no Banco
   salvarNoBanco(texto: string, quemEnviou: 'user' | 'ai'): void {
     const user = this.auth.getUser();
-    if (!user || !user.id) return; // Se não tiver logado, não salva
+    // Se não tiver ID (usuário fake ou deslogado), não salva para não dar erro
+    if (!user || !user.id) return; 
 
     const payload = {
       userId: user.id,
@@ -48,14 +46,18 @@ export class IAController {
       text: texto
     };
 
-    // Manda pro Node salvar (subscribe vazio pois não precisamos esperar a resposta)
-    this.http.post(`${this.nodeUrl}/messages`, payload).subscribe();
+    this.http.post(`${this.nodeUrl}/messages`, payload).subscribe({
+      error: (err) => console.error('Erro silencioso ao salvar msg:', err)
+    });
   }
 
-  // 3. Carrega histórico do MongoDB
+  // 3. NOVA FUNÇÃO: Carregar Histórico
   carregarHistorico(): Observable<any[]> {
     const user = this.auth.getUser();
-    if (!user || !user.id) return new Observable(obs => obs.next([]));
+    if (!user || !user.id) {
+        // Retorna lista vazia se não tiver usuário logado
+        return new Observable(obs => { obs.next([]); obs.complete(); });
+    }
 
     return this.http.get<any[]>(`${this.nodeUrl}/messages/${user.id}`);
   }
