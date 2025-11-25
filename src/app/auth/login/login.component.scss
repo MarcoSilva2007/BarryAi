@@ -1,4 +1,5 @@
 // Cores e Variáveis - Atualizadas para paleta Barry AI
+$primary-red: #ef4444;
 $primary-blue: #1E90FF;
 $secondary-blue: #007BFF;
 $accent-yellow: #FFD700;
@@ -6,11 +7,11 @@ $neutral-white: #FFFFFF;
 $neutral-black: #000000;
 $light-gray: #f8f9fa;
 $dark-gray: #343a40;
-
 $glass-bg: rgba(255, 255, 255, 0.95);
 $border-glass: rgba(30, 144, 255, 0.2);
 $text-color: #333333;
 $input-bg: #ffffff;
+$bg-gradient: linear-gradient(135deg, #111827 0%, #1f2937 100%);
 
 :host {
     display: block;

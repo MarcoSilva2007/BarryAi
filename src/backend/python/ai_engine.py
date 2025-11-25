@@ -80,29 +80,28 @@ class UserRequest(BaseModel):
     message: str
     history: List[HistoryItem] = [] 
 
-# --- FUNÇÃO NOVA: PROCESSADOR DE COMANDOS ---
+
 def processar_resposta(texto):
-    # Procura por [IMG: ...] na resposta da IA
+    # Ajustei o REGEX para ser mais flexível (pega maiusculas e minusculas)
     padrao = r'\[IMG:\s*(.*?)\]'
     
     def substituir_por_link(match):
         descricao = match.group(1).strip()
-        print(f"🎨 Gerando imagem para: {descricao}")
+        print(f"🎨 SOLICITAÇÃO DE IMAGEM: {descricao}") # Debug 1
         
-        # 1. Limpa a descrição para URL (Mata espaços, acentos, etc)
         descricao_url = quote(descricao)
-        
-        # 2. Gera semente aleatória (Garante imagem nova sempre)
         seed = random.randint(0, 999999)
         
-        # 3. Monta o link perfeito
+        # Link do Pollinations
         url = f"https://image.pollinations.ai/prompt/{descricao_url}?nologo=true&seed={seed}&width=1024&height=768"
         
-        # 4. Retorna o Markdown pronto pro Angular
+        print(f"🔗 LINK GERADO: {url}") # Debug 2 - Copie esse link e teste no navegador
+        
+        # Markdown exato
         return f"\n![Imagem Gerada]({url})\n"
 
-    # Substitui o comando pelo link real
-    return re.sub(padrao, substituir_por_link, texto)
+    texto_final = re.sub(padrao, substituir_por_link, texto, flags=re.IGNORECASE)
+    return texto_final
 
 @app.post("/chat")
 async def chat_with_barry(request: UserRequest):

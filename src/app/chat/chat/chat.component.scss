@@ -102,15 +102,18 @@ $msg-ai: #3e4042;
     // Aqui ele usa a variável $flash-yellow que definimos no topo
     strong { color: $flash-yellow; font-weight: bold; }
 
-    // ESTILO DA IMAGEM (Prompt Injection)
+    // ... dentro de .markdown-text ::ng-deep ...
+
     img {
-      max-width: 100%;       /* Impede que a imagem estoure a tela */
+      max-width: 100%;
       height: auto;
+      min-height: 200px; /* <--- FORÇA UMA ALTURA MÍNIMA */
       border-radius: 10px;
       margin-top: 10px;
-      border: 2px solid $flash-red; /* Usa a variável definida no topo */
+      border: 2px solid $flash-red;
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       display: block;
+      background-color: #000; 
     }
   }
 }
