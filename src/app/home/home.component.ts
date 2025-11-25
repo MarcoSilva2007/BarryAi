@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
   isLogged: boolean = false;
   userName: string = '';
 
-  constructor(private router: Router, private auth: AuthController) {}
+  constructor(private router: Router, private auth: AuthController) { }
 
   ngOnInit() {
     this.isLogged = this.auth.isLoggedIn();
@@ -32,5 +32,8 @@ export class HomeComponent implements OnInit {
   logout() {
     this.auth.logout();
     this.isLogged = false;
+  }
+  goToRegister() {
+    this.router.navigate(['/register']);
   }
 }
