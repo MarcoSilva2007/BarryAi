@@ -59,7 +59,6 @@
             <td>
               <!-- Classes dinâmicas para cor da tag -->
               <span class="tag" 
-                    [class.premium]="user.tipo === 'premium'"
                     [class.basic]="user.tipo === 'basic'"
                     [class.admin]="user.tipo === 'admin'">
                 {{ user.tipo | uppercase }}

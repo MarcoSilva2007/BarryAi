@@ -1,74 +1,97 @@
-<div class="login-wrapper">
-  <!-- Efeito de fundo animado (opcional) -->
-  <div class="background-shape"></div>
-  <div class="background-shape shape-2"></div>
 
-  <div class="glass-container">
-    
-    <div class="header">
-      <div class="logo-icon">⚡</div>
-      <h2>Barry AI</h2>
-      <p>Bem-vindo de volta!</p>
+<nav class="navbar">
+    <div class="container">
+      <div class="navbar-content">
+        <a routerLink="/home" class="logo">
+          <i class="fas fa-bolt logo-icon"></i>
+          Barry AI
+        </a>
+
+        <ul class="nav-links">
+          <li><a routerLink="/home">Início</a></li>
+          <li><a routerLink="/home">Sobre</a></li>
+          <li><a routerLink="/home">Problema</a></li>
+          <li><a routerLink="/home">Usuários</a></li>
+          <li><a routerLink="/home">Funcionalidades</a></li>
+          <li><a routerLink="/home">Tecnologias</a></li>
+        </ul>
+
+        <button class="mobile-menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="login-wrapper">
+    <!-- Efeito de fundo com ondas -->
+    <div class="wave-background">
+      <div class="wave-3"></div>
     </div>
 
-    <form (ngSubmit)="login()" class="login-form">
-      
-      <!-- Input Email -->
-      <div class="input-group">
-        <label for="email">Email</label>
-        <div class="input-wrapper">
-          <!-- Ícone de carta -->
-          <i class="fas fa-envelope input-icon"></i>
-          <input 
-            id="email"
-            [(ngModel)]="emailInput" 
-            name="email" 
-            type="email" 
-            placeholder="ex: flash@barry.com" 
-            required
-          />
-        </div>
+    <!-- Formas flutuantes de fundo -->
+    <div class="background-shape"></div>
+    <div class="background-shape shape-2"></div>
+    <div class="background-shape shape-3"></div>
+    <div class="background-shape shape-4"></div>
+
+
+    <div class="glass-container">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+      <div class="header">
+        <i class="fas fa-bolt logo-icon"></i>
+        <h2>Barry AI</h2>
+        <p>Bem-vindo de volta!</p>
       </div>
 
-      <!-- Input Senha -->
-      <div class="input-group">
-        <label for="senha">Senha</label>
-        <div class="input-wrapper">
-          <!-- Ícone de cadeado -->
-          <i class="fas fa-lock input-icon"></i>
-          <input 
-            id="senha"
-            [(ngModel)]="senhaInput" 
-            name="senha" 
-            [type]="mostrarSenha ? 'text' : 'password'" 
-            placeholder="Sua senha" 
-            required
-          />
-          <!-- Botão Olho (Ver/Ocultar) -->
-          <button type="button" class="toggle-password" (click)="toggleSenha()" tabindex="-1">
-            <i [class]="mostrarSenha ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-          </button>
-        </div>
-        <a href="#" class="forgot-pass">Esqueceu a senha?</a>
-      </div>
+      <form (ngSubmit)="login()" class="login-form">
 
-      <!-- Botões -->
-      <div class="actions">
+        <!-- Input Email -->
+        <div class="input-group">
+          <label for="email">Email</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope input-icon"></i>
+            <input id="email" [(ngModel)]="emailInput" name="email" type="email" placeholder="ex: flash@barry.com"
+              required />
+          </div>
+        </div>
+
+        <!-- Input Senha -->
+        <div class="input-group">
+          <label for="senha">Senha</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock input-icon"></i>
+            <input id="senha" [(ngModel)]="senhaInput" name="senha" [type]="mostrarSenha ? 'text' : 'password'"
+              placeholder="Sua senha" required />
+            <button type="button" class="toggle-password" (click)="toggleSenha()" tabindex="-1">
+              <i [class]="mostrarSenha ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <a href="#" class="forgot-pass">Esqueceu a senha?</a>
+        </div>
+
+        <!-- Botão de Login -->
         <button type="submit" class="btn-primary" [disabled]="!emailInput || !senhaInput">
           <span *ngIf="!isLoading">ACESSAR SISTEMA</span>
-          <!-- Loading spinner simples -->
-          <span *ngIf="isLoading" class="spinner"></span> 
+          <div *ngIf="isLoading" class="spinner"></div>
         </button>
-        
+
+        <!-- Divisor -->
         <div class="divider">
           <span>ou continue com</span>
         </div>
 
+        <!-- Botão de Registro -->
         <button type="button" class="btn-secondary" (click)="irParaRegistro()">
+          <i class="fas fa-user-plus"></i>
           CRIAR CONTA GRATIS
         </button>
-      </div>
 
-    </form>
+        <!-- Link de registro -->
+        <div class="register-link">
+          Não tem uma conta? <a href="#" (click)="irParaRegistro()">Cadastre-se aqui</a>
+        </div>
+
+      </form>
+    </div>
   </div>
-</div>

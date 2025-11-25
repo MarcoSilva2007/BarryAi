@@ -1,26 +1,409 @@
-<div class="home-wrapper">
-  <div class="hero">
-    <div class="icon">⚡</div>
-    <h1>Barry AI</h1>
-    <p class="subtitle">A Inteligência Artificial mais rápida viva.</p>
-    
-    <div class="actions">
-      <!-- Se NÃO estiver logado -->
-      <ng-container *ngIf="!isLogged">
-        <button (click)="navegar('/login')" class="btn-primary">ENTRAR</button>
-        <button (click)="navegar('/register')" class="btn-outline">CRIAR CONTA</button>
-      </ng-container>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barry AI - A IA mais rápida viva</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="home.component.scss">
 
-      <!-- Se JÁ estiver logado -->
-      <ng-container *ngIf="isLogged">
-        <p class="welcome-back">Olá de volta, {{ userName }}!</p>
-        <button (click)="navegar('/chat')" class="btn-primary">⚡ ACESSAR CHAT</button>
-        <button (click)="logout()" class="btn-text">Sair</button>
-      </ng-container>
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-content">
+      <a href="#home" class="logo">
+        <i class="fas fa-bolt logo-icon"></i>
+        Barry AI
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#home">Início</a></li>
+        <li><a href="#about">Sobre</a></li>
+        <li><a href="#problem">Problema</a></li>
+        <li><a href="#users">Usuários</a></li>
+        <li><a href="#features">Funcionalidades</a></li>
+        <li><a href="#tech">Tecnologias</a></li>
+      </ul>
+
+      <button class="mobile-menu">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
   </div>
-  
-  <footer class="footer">
-    <p>© 2025 Central City Tech • Powered by Speed Force</p>
-  </footer>
-</div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <i class="fas fa-bolt"></i>
+      </div>
+      <h1>Barry AI</h1>
+      <p class="subtitle">Descomplicando a tecnologia para você!</p>
+      <p>Uma IA acessível para todos, focada em usabilidade e inclusão digital</p>
+      <div class="hero-actions">
+        <button class="button" [routerLink]="['/login']">
+          ENTRAR
+        </button>
+        <button class="button" [routerLink]="['/register']">
+          CRIAR CONTA</button>
+      </div>
+    </div>
+    <button class="btn-17" [routerLink]="['/chat']">
+      <span class="text-container">
+        <span class="text">CONVERSAR COM BARRY</span>
+      </span>
+    </button>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="section-title">
+      <h2>Sobre o Barry AI</h2>
+      <p>Conheça a IA que está revolucionando a acessibilidade digital</p>
+    </div>
+    <div class="about-content">
+      <div class="about-text">
+        <h3>Uma IA para todos</h3>
+        <p>BarryAI é um chatbot inteligente desenvolvido com foco em usabilidade e inclusão digital, projetado
+          especialmente para pessoas com dificuldades tecnológicas.</p>
+        <p>Nosso objetivo é tornar a interação com inteligência artificial acessível, segura e produtiva para pessoas
+          de todas as idades.</p>
+        <ul class="features-list">
+          <li>Interface simples e intuitiva</li>
+          <li>Suporte a diferentes níveis de habilidade</li>
+          <li>Design acessível e inclusivo</li>
+          <li>Respostas rápidas e precisas</li>
+        </ul>
+      </div>
+      <div class="about-visual">
+        <div class="visual-card">
+          <div class="stat">
+            <span class="stat-number">99%</span>
+            <span class="stat-label">Satisfação dos Usuários</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Problem Section -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="section-title">
+      <h2>O Problema que Resolvemos</h2>
+      <p>Entenda os desafios da acessibilidade digital hoje</p>
+    </div>
+    <div class="problem-content">
+      <div class="problem-statement">
+        <p>No mundo atual, a tecnologia é fundamental para educação, trabalho e comunicação. Entretanto, milhões de
+          pessoas enfrentam limitações no uso dessas ferramentas.</p>
+        <p>Idosos, pessoas com deficiência e usuários com pouca familiaridade tecnológica são frequentemente deixados
+          para trás pela complexidade das interfaces modernas.</p>
+      </div>
+      <div class="highlight-box">
+        <h3>BarryAI nasce para ser uma IA empática e acessível</h3>
+        <p>Transformando barreiras tecnológicas em pontes de conexão</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Users Section -->
+<section class="users" id="users">
+  <div class="container">
+    <div class="section-title">
+      <h2>Tipos de Usuários</h2>
+      <p>Conheça os perfis que utilizam nossa plataforma</p>
+    </div>
+    <div class="users-grid">
+      <div class="user-card">
+        <div class="user-icon">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <h3>Administrador</h3>
+        <p>Acesso completo ao sistema e funcionalidades avançadas</p>
+        <ul class="user-features">
+          <li>Gerencia todos os usuários</li>
+          <li>Acesso total ao sistema</li>
+          <li>Visualiza métricas e histórico</li>
+          <li>Pode editar e excluir contas</li>
+        </ul>
+      </div>
+      <div class="user-card">
+        <div class="user-icon">
+          <i class="fas fa-user"></i>
+        </div>
+        <h3>Usuário Básico</h3>
+        <p>Acesso às funcionalidades essenciais com interface simplificada</p>
+        <ul class="user-features">
+          <li>Acesso às funcionalidades da IA</li>
+          <li>Interface simplificada</li>
+          <li>Histórico de conversas</li>
+          <li>Suporte dedicado</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-title">
+      <h2>Funcionalidades</h2>
+      <p>Descubra tudo que o Barry AI pode fazer por você</p>
+    </div>
+    <div class="features-tabs">
+    </div>
+
+    <div class="tab-content active" id="funcionais">
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <h3>Cadastro de Usuários</h3>
+          <p>Sistema permite cadastro com nome, e-mail e senha de forma segura.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-sign-in-alt"></i>
+          </div>
+          <h3>Login Seguro</h3>
+          <p>Autenticação por e-mail e senha com proteção avançada.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-users-cog"></i>
+          </div>
+          <h3>Controle de Acesso</h3>
+          <p>Diferenciação entre usuários Admin e Básico com permissões específicas.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="nao-funcionais">
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-mouse-pointer"></i>
+          </div>
+          <h3>Usabilidade</h3>
+          <p>Interface intuitiva e simples para qualquer nível de habilidade.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-universal-access"></i>
+          </div>
+          <h3>Acessibilidade</h3>
+          <p>Seguir diretrizes WCAG 2.1 com contraste adequado e suporte a leitores.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-tachometer-alt"></i>
+          </div>
+          <h3>Desempenho</h3>
+          <p>Tempo de resposta não excede 5 segundos em 95% das requisições.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Technologies Section -->
+<section class="technologies" id="tech">
+  <div class="container">
+    <div class="section-title">
+      <h2>Tecnologias Utilizadas</h2>
+      <p>As ferramentas que tornam o Barry AI possível</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-icon">
+          <i class="fab fa-python"></i>
+        </div>
+        <h3>Python</h3>
+        <p>Integração com IA e processamento de linguagem natural.</p>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">
+          <i class="fab fa-node-js"></i>
+        </div>
+        <h3>Node.js</h3>
+        <p>API robusta e escalável para o backend da aplicação.</p>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">
+          <i class="fas fa-database"></i>
+        </div>
+        <h3>MongoDB</h3>
+        <p>Banco de dados NoSQL para armazenamento flexível.</p>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">
+          <i class="fab fa-angular"></i>
+        </div>
+        <h3>Angular</h3>
+        <p>Framework frontend para interface moderna e responsiva.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>Barry AI</h3>
+        <p>Uma IA acessível para todos, focada em usabilidade e inclusão digital.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Links Rápidos</h3>
+        <ul class="footer-links">
+          <li><a href="#home">Início</a></li>
+          <li><a href="#about">Sobre</a></li>
+          <li><a href="#problem">Problema</a></li>
+          <li><a href="#users">Usuários</a></li>
+          <li><a href="#features">Funcionalidades</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Contato</h3>
+        <ul class="footer-links">
+          <li><i class="fas fa-envelope"></i> contato@barryai.com</li>
+          <li><i class="fas fa-phone"></i> (11) 9999-9999</li>
+          <li><i class="fas fa-map-marker-alt"></i> São Paulo, Brasil</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Central City Tech • Powered by Speed Force</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Navbar scroll effect
+  window.addEventListener('scroll', function () {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 100) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+
+    // Atualizar link ativo baseado na seção visível
+    updateActiveNavLink();
+  });
+
+  // Mobile menu toggle
+  document.querySelector('.mobile-menu').addEventListener('click', function () {
+    document.querySelector('.nav-links').classList.toggle('active');
+  });
+
+  // Smooth scrolling para links de âncora
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        // Calcular a posição considerando o navbar fixo
+        const navbarHeight = document.querySelector('.navbar').offsetHeight;
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+
+        // Fechar menu mobile se estiver aberto
+        if (window.innerWidth <= 768) {
+          document.querySelector('.nav-links').classList.remove('active');
+        }
+
+        // Atualizar URL sem recarregar a página
+        history.pushState(null, null, targetId);
+      }
+    });
+  });
+
+  // Função para atualizar o link ativo no navbar
+  function updateActiveNavLink() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+
+    let currentSection = '';
+    const scrollPosition = window.scrollY + 100;
+
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+
+      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        currentSection = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === `#${currentSection}`) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  // Ativar link baseado na URL ao carregar a página
+  function setActiveLinkFromURL() {
+    const hash = window.location.hash;
+    if (hash) {
+      const targetLink = document.querySelector(`.nav-links a[href="${hash}"]`);
+      if (targetLink) {
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          link.classList.remove('active');
+        });
+        targetLink.classList.add('active');
+      }
+    }
+  }
+
+  // Tab functionality for features section
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remove active class from all buttons and contents
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+
+      // Add active class to clicked button
+      btn.classList.add('active');
+
+      // Show corresponding content
+      const tabId = btn.getAttribute('data-tab');
+      document.getElementById(tabId).classList.add('active');
+    });
+  });
+
+  // Chamar funções iniciais
+  document.addEventListener('DOMContentLoaded', function () {
+    updateActiveNavLink();
+    setActiveLinkFromURL();
+  });
+</script>
