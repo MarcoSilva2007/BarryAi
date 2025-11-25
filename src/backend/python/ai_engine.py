@@ -81,27 +81,29 @@ class UserRequest(BaseModel):
     history: List[HistoryItem] = [] 
 
 
+# --- PROCESSADOR DE COMANDOS ---
 def processar_resposta(texto):
-    # Ajustei o REGEX para ser mais flexível (pega maiusculas e minusculas)
     padrao = r'\[IMG:\s*(.*?)\]'
     
     def substituir_por_link(match):
         descricao = match.group(1).strip()
-        print(f"🎨 SOLICITAÇÃO DE IMAGEM: {descricao}") # Debug 1
+        print(f"🎨 SOLICITAÇÃO DE IMAGEM: {descricao}")
         
+        # 1. Limpa a descrição
         descricao_url = quote(descricao)
+        
+        # 2. Semente aleatória
         seed = random.randint(0, 999999)
         
-        # Link do Pollinations
-        url = f"https://image.pollinations.ai/prompt/{descricao_url}?nologo=true&seed={seed}&width=1024&height=768"
+        # 3. Monta o link (MUDANÇA AQUI: Adicionei &model=turbo)
+        # O modelo 'turbo' é mais rápido e raramente cai.
+        url = f"https://image.pollinations.ai/prompt/{descricao_url}?nologo=true&seed={seed}&width=1024&height=768&model=turbo"
         
-        print(f"🔗 LINK GERADO: {url}") # Debug 2 - Copie esse link e teste no navegador
+        print(f"🔗 LINK GERADO: {url}")
         
-        # Markdown exato
         return f"\n![Imagem Gerada]({url})\n"
 
-    texto_final = re.sub(padrao, substituir_por_link, texto, flags=re.IGNORECASE)
-    return texto_final
+    return re.sub(padrao, substituir_por_link, texto, flags=re.IGNORECASE)
 
 @app.post("/chat")
 async def chat_with_barry(request: UserRequest):
