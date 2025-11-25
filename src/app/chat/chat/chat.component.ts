@@ -1,55 +1,90 @@
-import { CommonModule } from '@angular/common'; 
+import { Component, ElementRef, ViewChild, AfterViewChecked, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MarkdownModule } from 'ngx-markdown'; 
-import { ChatService } from '../chat.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { MarkdownModule } from 'ngx-markdown';
+import { IAController } from '../../controllers/ia.controller';
+
+interface Mensagem {
+  texto: string;
+  tipo: 'user' | 'ai';
+}
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [
-    CommonModule, 
-    FormsModule, 
-    MarkdownModule
-  ],
-  
+  imports: [CommonModule, FormsModule, MarkdownModule],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent {
-  // 1. Declaração das variáveis com os nomes EXATOS do seu HTML
-  userMessage: string = ''; 
-  mensagens: any[] = [];      // Era 'messages'
-  carregando: boolean = false; // Era 'isBarryTyping'
+export class ChatComponent implements AfterViewChecked, OnInit {
+  
+  @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
-  constructor(
-    private chatService: ChatService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  mensagens: Mensagem[] = [];
+  textoInput: string = ''; 
+  carregando: boolean = false;
 
-  enviar() {
-    if (!this.userMessage.trim()) return;
+  constructor(private ia: IAController) {}
 
-    this.mensagens.push({ text: this.userMessage, isUser: true });
+  // 1. Carrega o histórico ao abrir a tela
+  ngOnInit() {
+    this.carregando = true;
+    this.ia.carregarHistorico().subscribe({
+      next: (msgsDoBanco) => {
+        // Converte do formato do banco para o formato da tela
+        this.mensagens = msgsDoBanco.map(m => ({
+          texto: m.text,
+          tipo: m.sender === 'user' ? 'user' : 'ai'
+        }));
+        this.carregando = false;
+        // Se estiver vazio, adiciona boas vindas
+        if (this.mensagens.length === 0) {
+            this.mensagens.push({ texto: "**Olá!** Sou o Barry AI. Vamos correr?", tipo: 'ai' });
+        }
+      },
+      error: () => this.carregando = false
+    });
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    try {
+      if(this.myScrollContainer) {
+        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+      }
+    } catch(err) { }
+  }
+
+ enviar(): void {
+    if (!this.textoInput.trim()) return;
+
+    const msg = this.textoInput;
     
-    const msgEnvio = this.userMessage;
-    this.userMessage = ''; 
+    // 1. Guarda o estado ATUAL do histórico (antes de adicionar a nova msg do user)
+    // Isso é importante para não enviar a própria pergunta duplicada no histórico
+    const historicoParaEnviar = [...this.mensagens]; 
+
+    // Adiciona na tela e no banco
+    this.mensagens.push({ texto: msg, tipo: 'user' });
+    this.ia.salvarNoBanco(msg, 'user');
+    
+    this.textoInput = '';
     this.carregando = true;
 
-     this.chatService.sendMessage(msgEnvio).subscribe({
-      next: (resposta) => {
+    // 2. Passa o histórico junto na chamada
+    this.ia.perguntar(msg, historicoParaEnviar).subscribe({
+      next: (res) => {
+        this.mensagens.push({ texto: res.resposta, tipo: 'ai' });
+        this.ia.salvarNoBanco(res.resposta, 'ai');
         this.carregando = false;
-        console.log('RESPOSTA COMPLETA DO BACKEND:', resposta);
-
-        this.mensagens.push({ 
-          text: resposta.response, 
-          isUser: false 
-        });
       },
-      error: (erro) => {
-        console.error(erro);
+      error: (err: any) => {
+        console.error(err);
+        this.mensagens.push({ texto: 'Erro de conexão.', tipo: 'ai' });
         this.carregando = false;
-        this.mensagens.push({ text: "Erro ao conectar.", isUser: false });
       }
     });
   }

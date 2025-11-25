@@ -1,37 +1,62 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
+import { AuthController } from './auth.controller'; // Importar para pegar o ID do usuário
+
+// ... imports continuam iguais
 
 @Injectable({
   providedIn: 'root'
 })
 export class IAController {
 
-  // 1. AJUSTE: O Python FastAPI roda na porta 8000, não na 5000
-  private apiUrl = 'http://localhost:8000';
+  private pythonUrl = 'http://localhost:8000';
+  private nodeUrl = 'http://localhost:5000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private auth: AuthController) {}
 
-  // Função principal do Chat
-  perguntar(pergunta: string, modelo: string = 'gemini-flash'): Observable<any> {
+  // 1. Agora aceita o ARRAY de mensagens anteriores
+  perguntar(perguntaAtual: string, historicoAngular: any[]): Observable<any> {
     
-    // 2. AJUSTE: O Python espera receber { "message": "..." }
-    const payload = { message: pergunta };
+    // 2. Prepara o histórico para o Python
+    // Pegamos as últimas 10 mensagens para não ficar muito pesado
+    const historicoFormatado = historicoAngular.slice(-10).map(msg => {
+      return {
+        // O Google usa 'model' para a IA, e nós usamos 'ai'. Temos que converter.
+        role: msg.tipo === 'user' ? 'user' : 'model', 
+        parts: [msg.texto]
+      };
+    });
 
-    // 3. AJUSTE: O endpoint no Python é apenas '/chat'
-    return this.http.post<any>(this.apiUrl + '/chat', payload).pipe(
-      // 4. AJUSTE: O Python devolve "response", mas seu componente espera "resposta".
-      // Fazemos a conversão aqui para nada quebrar na tela.
-      map(dadosDoPython => {
-        return { resposta: dadosDoPython.response };
-      })
+    const payload = { 
+      message: perguntaAtual,
+      history: historicoFormatado 
+    };
+
+    return this.http.post<any>(`${this.pythonUrl}/chat`, payload).pipe(
+      map(dados => { return { resposta: dados.response }; })
     );
   }
+  // 2. Salva mensagem no MongoDB (Node)
+  salvarNoBanco(texto: string, quemEnviou: 'user' | 'ai'): void {
+    const user = this.auth.getUser();
+    if (!user || !user.id) return; // Se não tiver logado, não salva
 
-  // Mantive essa função caso você queira implementar upload de arquivos no futuro
-  // (Obs: O backend Python atual ainda não suporta upload, teria que criar a rota lá)
-  enviarArquivo(formData: FormData): Observable<any> {
-    return this.http.post(this.apiUrl + '/upload', formData);
+    const payload = {
+      userId: user.id,
+      sender: quemEnviou,
+      text: texto
+    };
+
+    // Manda pro Node salvar (subscribe vazio pois não precisamos esperar a resposta)
+    this.http.post(`${this.nodeUrl}/messages`, payload).subscribe();
+  }
+
+  // 3. Carrega histórico do MongoDB
+  carregarHistorico(): Observable<any[]> {
+    const user = this.auth.getUser();
+    if (!user || !user.id) return new Observable(obs => obs.next([]));
+
+    return this.http.get<any[]>(`${this.nodeUrl}/messages/${user.id}`);
   }
 }

@@ -1,0 +1,156 @@
+// 1. DEFINIÇÃO DAS VARIÁVEIS (Isso corrige o seu erro)
+$bg-color: #1e1e1e;       
+$chat-bg: #252526;        
+$input-bg: #333333;       
+$flash-red: #dc2626;      // <--- A variável que faltava para a borda da imagem
+$flash-yellow: #fbbf24;   // <--- A variável que faltava para o erro 'undefined'
+$text-color: #e5e7eb;     
+$msg-user: #005c4b;       
+$msg-ai: #3e4042;         
+
+:host {
+  display: block;
+  height: 100vh;
+  background-color: $bg-color;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.chat {
+  max-width: 900px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: $chat-bg;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+
+  h2 {
+    background-color: $input-bg;
+    color: $text-color;
+    padding: 15px;
+    margin: 0;
+    text-align: center;
+    border-bottom: 1px solid #444;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    
+    span { color: $flash-yellow; } 
+  }
+}
+
+.chat-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  &::-webkit-scrollbar { width: 8px; }
+  &::-webkit-scrollbar-track { background: $chat-bg; }
+  &::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+}
+
+.msg {
+  max-width: 80%;
+  padding: 10px 15px;
+  border-radius: 10px;
+  line-height: 1.5;
+  color: $text-color;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+
+  strong {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  background-color: $msg-ai;
+  align-self: flex-start;
+  border-top-left-radius: 0;
+
+  &.user {
+    background-color: $msg-user;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+  }
+}
+
+// --- AQUI ESTÁ A CORREÇÃO DO MARKDOWN E DA IMAGEM ---
+.markdown-text {
+  ::ng-deep {
+    p { margin: 0 0 10px 0; }
+    p:last-child { margin-bottom: 0; }
+    
+    pre {
+      background: #111 !important;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+      border: 1px solid #444;
+      margin: 10px 0;
+    }
+    
+    code {
+      font-family: 'Consolas', monospace;
+      font-size: 0.9rem;
+      color: #ff79c6; 
+    }
+    
+    // Aqui ele usa a variável $flash-yellow que definimos no topo
+    strong { color: $flash-yellow; font-weight: bold; }
+
+    // ESTILO DA IMAGEM (Prompt Injection)
+    img {
+      max-width: 100%;       /* Impede que a imagem estoure a tela */
+      height: auto;
+      border-radius: 10px;
+      margin-top: 10px;
+      border: 2px solid $flash-red; /* Usa a variável definida no topo */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      display: block;
+    }
+  }
+}
+
+.input-area {
+  padding: 15px;
+  background-color: $input-bg;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #444;
+
+  input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 25px;
+    border: 1px solid #555;
+    background-color: #222;
+    color: white;
+    outline: none;
+    
+    &:focus { border-color: $flash-red; }
+  }
+
+  button {
+    padding: 0 25px;
+    border-radius: 25px;
+    border: none;
+    background-color: $flash-red;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.1s;
+
+    &:hover { background-color: #b91c1c; }
+    &:active { transform: scale(0.95); }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
