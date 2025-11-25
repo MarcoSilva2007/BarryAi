@@ -24,6 +24,12 @@ export class ChatComponent implements AfterViewChecked, OnInit {
   textoInput: string = ''; 
   carregando: boolean = false;
 
+   isDashboardCollapsed = false;
+
+  toggleDashboard() {
+    this.isDashboardCollapsed = !this.isDashboardCollapsed;
+  }
+
   constructor(private ia: IAController) {}
 
   ngOnInit() {
