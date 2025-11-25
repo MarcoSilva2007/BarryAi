@@ -6,7 +6,7 @@
     <div *ngFor="let msg of mensagens" class="msg" [class.user]="msg.tipo === 'user'">
       <strong>{{ msg.tipo === 'user' ? 'Você:' : 'BarryAI:' }}</strong> 
       
-      <!-- MUDANÇA 1: Usamos a tag markdown para formatar o texto (negrito, código, etc) -->
+      <!-- Renderiza texto com formatação (Markdown) -->
       <div class="markdown-text">
         <markdown [data]="msg.texto"></markdown>
       </div>
@@ -16,13 +16,12 @@
   </div>
 
   <div class="input-area">
-    <!-- MUDANÇA 2: Usamos [(ngModel)]="textoInput" em vez de #perguntaInput -->
+    <!-- CORREÇÃO AQUI: Mudamos de userMessage para textoInput -->
     <input [(ngModel)]="textoInput" 
            type="text" 
            placeholder="Faça sua pergunta..." 
            (keyup.enter)="enviar()" />
     
-    <!-- MUDANÇA 3: Chamamos enviar() sem argumentos -->
     <button (click)="enviar()">Enviar</button>
   </div>
 </div>

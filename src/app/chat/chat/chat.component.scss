@@ -1,19 +1,12 @@
-@import 'prismjs/themes/prism-tomorrow.css'; 
-
-// Variáveis do Tema
-$bg-color: #1e1e1e;       // Fundo geral
-$chat-bg: #252526;        // Fundo da área de chat
-$input-bg: #333333;       // Fundo do input
-$flash-red: #dc2626;      // Vermelho do botão
-$flash-yellow: #fbbf24;   // Detalhes
-$text-color: #e5e7eb;     // Texto claro
-$msg-user: #005c4b;       // Verde escuro (estilo Zap dark)
-$msg-ai: #3e4042;         // Cinza (IA)
-
-body {
-    margin: 0;
-    background-color: #111;
-}
+// 1. DEFINIÇÃO DAS VARIÁVEIS (Isso corrige o seu erro)
+$bg-color: #1e1e1e;       
+$chat-bg: #252526;        
+$input-bg: #333333;       
+$flash-red: #dc2626;      // <--- A variável que faltava para a borda da imagem
+$flash-yellow: #fbbf24;   // <--- A variável que faltava para o erro 'undefined'
+$text-color: #e5e7eb;     
+$msg-user: #005c4b;       
+$msg-ai: #3e4042;         
 
 :host {
   display: block;
@@ -41,7 +34,7 @@ body {
     font-size: 1.2rem;
     letter-spacing: 1px;
     
-    span { color: $flash-yellow; } // O raiozinho
+    span { color: $flash-yellow; } 
   }
 }
 
@@ -53,7 +46,6 @@ body {
   flex-direction: column;
   gap: 15px;
 
-  // Scrollbar bonita
   &::-webkit-scrollbar { width: 8px; }
   &::-webkit-scrollbar-track { background: $chat-bg; }
   &::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
@@ -75,12 +67,10 @@ body {
     color: rgba(255,255,255,0.6);
   }
 
-  // Estilo da IA (Alinhado a esquerda)
   background-color: $msg-ai;
   align-self: flex-start;
   border-top-left-radius: 0;
 
-  // Estilo do Usuário (Alinhado a direita)
   &.user {
     background-color: $msg-user;
     align-self: flex-end;
@@ -88,13 +78,12 @@ body {
   }
 }
 
-// Estilização do Markdown (Código, Negrito, Listas)
+// --- AQUI ESTÁ A CORREÇÃO DO MARKDOWN E DA IMAGEM ---
 .markdown-text {
   ::ng-deep {
     p { margin: 0 0 10px 0; }
     p:last-child { margin-bottom: 0; }
     
-    // Blocos de código (fundo preto)
     pre {
       background: #111 !important;
       padding: 10px;
@@ -107,10 +96,22 @@ body {
     code {
       font-family: 'Consolas', monospace;
       font-size: 0.9rem;
-      color: #ff79c6; // Rosa estilo Drácula
+      color: #ff79c6; 
     }
     
-    strong { color: $flash-yellow; }
+    // Aqui ele usa a variável $flash-yellow que definimos no topo
+    strong { color: $flash-yellow; font-weight: bold; }
+
+    // ESTILO DA IMAGEM (Prompt Injection)
+    img {
+      max-width: 100%;       /* Impede que a imagem estoure a tela */
+      height: auto;
+      border-radius: 10px;
+      margin-top: 10px;
+      border: 2px solid $flash-red; /* Usa a variável definida no topo */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      display: block;
+    }
   }
 }
 
