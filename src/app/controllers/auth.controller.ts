@@ -7,7 +7,7 @@ import { User } from '../models/user.model';
 export class AuthController {
   
   // Aponta para o servidor Node que acabamos de criar
-  private apiUrl = 'http://localhost:5000/api'; 
+  private apiUrl = 'https://fruity-deer-reply.loca.lt/api'; 
 
   constructor(private http: HttpClient) {}
 
