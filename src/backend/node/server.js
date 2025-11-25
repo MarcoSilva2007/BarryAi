@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 
 // 1. Configurações Básicas
-app.use(cors()); // Libera o Angular
+app.use(cors({ origin: '*' })); // Libera o Angular
 app.use(express.json()); // Permite ler JSON
 
 // 2. Conexão com MongoDB (Local)
