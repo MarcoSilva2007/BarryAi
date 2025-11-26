@@ -3,13 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { AuthController } from './auth.controller'; // Importar para pegar o ID do usuário
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class IAController {
 
-  private pythonUrl = 'http://localhost:8000'; // Inteligência
-  private nodeUrl = 'http://localhost:5000/api'; // Banco de Dados
+  private pythonUrl = 'https://kind-moose-take.loca.lt'; 
+  private nodeUrl = 'https://fruity-deer-reply.loca.lt/api'; 
 
   constructor(private http: HttpClient, private auth: AuthController) {}
 

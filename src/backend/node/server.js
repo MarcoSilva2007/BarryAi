@@ -4,138 +4,121 @@ const cors = require('cors');
 
 const app = express();
 
-// 1. Configurações Básicas
-app.use(cors()); // Libera o Angular
-app.use(express.json()); // Permite ler JSON
+app.use(cors({ origin: '*' }));
+app.use(express.json());
 
-// 2. Conexão com MongoDB (Local)
-// Salva no banco "barrydb" no seu computador
-mongoose.connect('mongodb://127.0.0.1:27017/barrydb')
-  .then(() => console.log('✅ MongoDB Conectado com Sucesso! (Banco: barrydb)'))
-  .catch(err => console.error('❌ Erro ao conectar no Mongo:', err));
+// --- CONFIGURAÇÃO DO BANCO ---
 
-// 3. Modelo do Usuário
+const mongoUri = 'mongodb+srv://adminDB:mmpv4@barryclus.syg9qut.mongodb.net/?appName=BarryClus'; 
+
+console.log('⏳ Tentando conectar ao MongoDB...');
+
+const options = {
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+};
+
+// Conexão
+mongoose.connect(mongoUri, options)
+  .then(() => {
+      console.log('✅ BANCO CONECTADO COM SUCESSO!');
+      startServer(); // Só liga o servidor se o banco conectar
+  })
+  .catch(err => {
+      console.error('❌ FALHA NA CONEXÃO COM O BANCO:', err.message);
+  });
+
+// --- SCHEMAS ---
 const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    tipo: { type: String, default: 'basic' } // basic, premium, admin
+    tipo: { type: String, default: 'basic' }
 });
-
 const User = mongoose.model('User', UserSchema);
 
-
 const MessageSchema = new mongoose.Schema({
-    userId: { type: String, required: true }, // Quem conversou?
-    sender: { type: String, required: true }, // 'user' ou 'ai'
-    text: { type: String, required: true },   // O que foi dito
-    timestamp: { type: Date, default: Date.now } // Quando
+    userId: String,
+    sender: String,
+    text: String,
+    timestamp: { type: Date, default: Date.now }
 });
-
 const Message = mongoose.model('Message', MessageSchema);
 
-// ==========================================
-// 4. ROTAS DA API
-// ==========================================
+// --- ROTAS ---
 
-// --- REGISTRO ---
+// 1. Registro
 app.post('/api/register', async (req, res) => {
-    console.log('📩 Registro:', req.body.email);
     try {
-        const { name, email, senha, tipo } = req.body;
+        const { name, email, senha, password, tipo } = req.body;
+        const passFinal = password || senha;
 
         const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res.status(400).json({ message: 'Email já cadastrado' });
-        }
+        if (userExists) return res.status(400).json({ message: 'Email já existe' });
 
-        const newUser = new User({
-            name,
-            email,
-            password: senha, // Mapeia "senha" do Angular para "password" do Banco
-            tipo
-        });
-
+        const newUser = new User({ name, email, password: passFinal, tipo: tipo || 'basic' });
         await newUser.save();
-        console.log('✅ Usuário criado:', newUser._id);
-        res.status(201).json({ message: 'Usuário criado com sucesso!' });
+        
+        res.status(201).json({ message: 'Sucesso' });
     } catch (error) {
-        console.error('Erro register:', error);
-        res.status(500).json({ message: 'Erro no servidor', error });
+        res.status(500).json({ message: 'Erro ao salvar', error: error.message });
     }
 });
 
-// --- LOGIN ---
+// 2. Login
 app.post('/api/login', async (req, res) => {
-    console.log('🔑 Login:', req.body.email);
     try {
-        const { email, senha } = req.body;
+        const { email, senha, password } = req.body;
+        const passFinal = password || senha;
+        
         const user = await User.findOne({ email });
-
-        if (!user || user.password !== senha) {
-            return res.status(401).json({ message: 'Email ou senha incorretos' });
+        if (!user || user.password !== passFinal) {
+            return res.status(401).json({ message: 'Credenciais inválidas' });
         }
-
+        
         res.json({
-            token: 'token-real-' + user._id,
-            usuario: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                tipo: user.tipo
-            }
+            token: 'token-' + user._id,
+            usuario: { id: user._id, name: user.name, email: user.email, tipo: user.tipo }
         });
     } catch (error) {
-        res.status(500).json({ message: 'Erro interno', error });
+        res.status(500).json({ message: 'Erro no login' });
     }
 });
 
+// 3. Salvar Mensagem
 app.post('/api/messages', async (req, res) => {
     try {
-        const { userId, sender, text } = req.body;
-        const newMessage = new Message({ userId, sender, text });
+        const newMessage = new Message(req.body);
         await newMessage.save();
-        res.status(201).json(newMessage);
+        res.json(newMessage);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao salvar mensagem' });
     }
 });
 
+// 4. Histórico
 app.get('/api/messages/:userId', async (req, res) => {
     try {
-        // Pega as mensagens desse usuário, ordenadas por data
-        const messages = await Message.find({ userId: req.params.userId }).sort({ timestamp: 1 });
-        res.json(messages);
+        const msgs = await Message.find({ userId: req.params.userId }).sort({ timestamp: 1 });
+        res.json(msgs);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar histórico' });
     }
-});''
+});
 
-// --- ADMIN: LISTAR USUÁRIOS (Faltava arrumar isso) ---
+// 5. Admin (Listar usuários)
 app.get('/api/users', async (req, res) => {
     try {
-        // Retorna todos, ordenados pelo mais novo (_id: -1)
         const users = await User.find({}, '-password').sort({ _id: -1 });
         res.json(users);
     } catch (error) {
-        res.status(500).json({ message: 'Erro ao buscar usuários', error });
+        res.status(500).json({ error: 'Erro ao listar usuários' });
     }
 });
 
-// --- ADMIN: DELETAR USUÁRIO ---
-app.delete('/api/users/:id', async (req, res) => {
-    try {
-        await User.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Usuário deletado com sucesso' });
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao deletar' });
-    }
-});
-
-// ==========================================
-// 5. INICIALIZAR SERVIDOR (Sempre por último)
-// ==========================================
-app.listen(5000, () => {
-    console.log('🚀 Servidor Node.js rodando na porta 5000');
-    console.log('📂 Banco de Dados: mongodb://127.0.0.1:27017/barrydb');
-});
+// --- INICIAR SERVIDOR ---
+function startServer() {
+    app.listen(5000, () => {
+        console.log('🚀 Servidor pronto na porta 5000!');
+    });
+}

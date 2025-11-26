@@ -1,0 +1,9 @@
+version: "2"
+authtoken: 35yoiXtd5S4KR34xTdJoIrsBGG5_3fDE9qq9ky3nBxBjdc2CR
+tunnels:
+  ia:
+    addr: 8000
+    proto: http
+  banco:
+    addr: 5000
+    proto: http
