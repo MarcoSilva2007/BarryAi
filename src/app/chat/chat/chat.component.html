@@ -1,27 +1,90 @@
-<div class="chat">
-  <h2>⚡ Barry AI Chat</h2>
-  
-  <div class="chat-area" #scrollMe style="height: 400px; overflow-y: auto;">
-    
-    <div *ngFor="let msg of mensagens" class="msg" [class.user]="msg.tipo === 'user'">
-      <strong>{{ msg.tipo === 'user' ? 'Você:' : 'BarryAI:' }}</strong> 
-      
-      <!-- Renderiza texto com formatação (Markdown) -->
-      <div class="markdown-text">
-        <markdown [data]="msg.texto"></markdown>
-      </div>
+<div class="chat-with-dashboard">
+  <!-- Dashboard Lateral -->
+  <aside class="dashboard" [class.collapsed]="isDashboardCollapsed">
+    <div class="dashboard-header">
+      <a href="#home" class="logo">
+        <i class="fas fa-bolt logo-icon"></i>
+        <span *ngIf="!isDashboardCollapsed">Barry AI</span>
+      </a>
     </div>
 
-    <div *ngIf="carregando"><em>Barry está digitando...</em></div>
-  </div>
+    <nav class="dashboard-nav" *ngIf="!isDashboardCollapsed">
+      <ul class="nav-links">
+        <li>
+          <a href="/home#home" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+          </a>
+        </li>
+        <li>
+          <a href="/home#about" class="nav-item">
+            <i class="fas fa-info-circle"></i>
+            <span>Sobre</span>
+          </a>
+        </li>
+        <li>
+          <a href="/home#problem" class="nav-item">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Problema</span>
+          </a>
+        </li>
+        <li>
+          <a href="/home#users" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Usuários</span>
+          </a>
+        </li>
+        <li>
+          <a href="/home#features" class="nav-item">
+            <i class="fas fa-star"></i>
+            <span>Funcionalidades</span>
+          </a>
+        </li>
+        <li>
+          <a href="/home#tech" class="nav-item">
+            <i class="fas fa-code"></i>
+            <span>Tecnologias</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
-  <div class="input-area">
-    <!-- CORREÇÃO AQUI: Mudamos de userMessage para textoInput -->
-    <input [(ngModel)]="textoInput" 
-           type="text" 
-           placeholder="Faça sua pergunta..." 
-           (keyup.enter)="enviar()" />
-    
-    <button (click)="enviar()">Enviar</button>
-  </div>
+    <!-- Botão Raio para Expandir/Recolher -->
+    <button class="lightning-toggle" (click)="toggleDashboard()">
+      <i class="fas fa-bolt"></i>
+    </button>
+  </aside>
+
+  <!-- Área Principal do Chat -->
+  <main class="main-content">
+    <div class="chat-container">
+      <div class="chat-area" #scrollMe>
+        <div *ngFor="let msg of mensagens" class="msg" [class.user]="msg.tipo === 'user'">
+          <strong>{{ msg.tipo === 'user' ? 'Você:' : 'BarryAI:' }}</strong> 
+          
+          <div class="markdown-text">
+            <markdown [data]="msg.texto"></markdown>
+          </div>
+        </div>
+
+        <div *ngIf="carregando" class="typing-indicator">
+          <em>Barry está digitando...</em>
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-area">
+        <input [(ngModel)]="textoInput" 
+               type="text" 
+               placeholder="Faça sua pergunta..." 
+               (keyup.enter)="enviar()" />
+        
+        <button (click)="enviar()">Enviar</button>
+      </div>
+    </div>
+  </main>
 </div>
