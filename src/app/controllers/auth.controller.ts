@@ -7,7 +7,7 @@ import { User } from '../models/user.model';
 export class AuthController {
   
   // Se estiver usando Render ou Ngrok, verifique se o link está certo aqui!
-  private apiUrl = 'http://localhost:5000/api'; 
+  private apiUrl = 'https://barryai.onrender.com'; 
 
   constructor(private http: HttpClient) {}
 

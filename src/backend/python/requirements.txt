@@ -6,3 +6,4 @@ pydantic
 pymongo
 dnspython
 requests
+passlib[bcrypt]
