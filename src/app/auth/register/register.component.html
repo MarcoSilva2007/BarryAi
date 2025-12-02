@@ -1,130 +1,93 @@
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Conta - Barry AI</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="register.component.scss">
-
 <nav class="navbar">
-    <div class="container">
-      <div class="navbar-content">
-        <a routerLink="/home" class="logo">
-          <i class="fas fa-bolt logo-icon"></i>
-          Barry AI
-        </a>
+  <div class="container">
+    <div class="navbar-content">
+      <!-- Use routerLink para navegação interna rápida -->
+      <a routerLink="/home" class="logo">
+        <i class="fas fa-bolt logo-icon"></i>
+        Barry AI
+      </a>
 
-        <ul class="nav-links">
-          <li><a href="/home#home">Início</a></li>
-        <li><a href="/home#about">Sobre</a></li>
-        <li><a href="/home#problem">Problema</a></li>
-        <li><a href="/home#users">Usuários</a></li>
-        <li><a href="/home#features">Funcionalidades</a></li>
-        <li><a href="/home#tech">Tecnologias</a></li>
-        </ul>
+      <ul class="nav-links">
+        <li><a routerLink="/home" fragment="home">Início</a></li>
+        <li><a routerLink="/home" fragment="about">Sobre</a></li>
+        <li><a routerLink="/home" fragment="problem">Problema</a></li>
+        <li><a routerLink="/home" fragment="users">Usuários</a></li>
+        <li><a routerLink="/home" fragment="features">Funcionalidades</a></li>
+        <li><a routerLink="/home" fragment="tech">Tecnologias</a></li>
+      </ul>
 
-        <button class="mobile-menu">
-          <i class="fas fa-bars"></i>
-        </button>
-      </div>
+      <button class="mobile-menu">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
-  </nav>
+  </div>
+</nav>
 
-    <div class="login-wrapper">
-        <div class="glass-container">
-            <div class="header">
-                <i class="fas fa-bolt logo-icon"></i>
-                <h2>Criar Conta</h2>
-                <p>Junte-se à comunidade Barry AI</p>
-            </div>
+<div class="login-wrapper">
+  <div class="glass-container">
+    <div class="header">
+      <i class="fas fa-bolt logo-icon"></i>
+      <h2>Criar Conta</h2>
+      <p>Junte-se à comunidade Barry AI</p>
+    </div>
 
-            <form class="login-form">
-                <!-- Input Nome -->
-                <div class="input-group">
-                    <label for="nome">Nome Completo</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-user input-icon"></i>
-                        <input id="nome" type="text" placeholder="Seu nome completo" required />
-                    </div>
-                </div>
-
-                <!-- Input Email -->
-                <div class="input-group">
-                    <label for="email">Email</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <input id="email" type="email" placeholder="ex: flash@barry.com" required />
-                    </div>
-                </div>
-
-                <!-- Input Senha -->
-                <div class="input-group">
-                    <label for="senha">Senha</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input id="senha" type="password" placeholder="Sua senha" required />
-                        <button type="button" class="toggle-password" onclick="toggleSenha()">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Botão de Registro -->
-                <button type="button" class="btn-primary" onclick="registrar()">
-                    <span>CRIAR CONTA</span>
-                </button>
-
-                <!-- Divisor -->
-                <div class="divider">
-                    <span>ou</span>
-                </div>
-
-                <!-- Link de login -->
-                <div class="register-link">
-                    Já tem uma conta? <a href="/login">Faça login aqui</a>
-                </div>
-            </form>
+    <form class="login-form">
+      <!-- Input Nome -->
+      <div class="input-group">
+        <label for="nome">Nome Completo</label>
+        <div class="input-wrapper">
+          <i class="fas fa-user input-icon"></i>
+          <!-- Adicionado ngModel -->
+          <input [(ngModel)]="nome" name="nome" id="nome" type="text" placeholder="Seu nome completo" required />
         </div>
-    </div>
+      </div>
 
-    <script>
-        function toggleSenha() {
-            const senhaInput = document.getElementById('senha');
-            const toggleBtn = document.querySelector('.toggle-password i');
-            
-            if (senhaInput.type === 'password') {
-                senhaInput.type = 'text';
-                toggleBtn.className = 'fas fa-eye-slash';
-            } else {
-                senhaInput.type = 'password';
-                toggleBtn.className = 'fas fa-eye';
-            }
-        }
+      <!-- Input Email -->
+      <div class="input-group">
+        <label for="email">Email</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope input-icon"></i>
+          <!-- Adicionado ngModel -->
+          <input [(ngModel)]="email" name="email" id="email" type="email" placeholder="ex: flash@barry.com" required />
+        </div>
+      </div>
 
-        function registrar() {
-            const nome = document.getElementById('nome').value;
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const btn = document.querySelector('.btn-primary');
-            
-            if (!nome || !email || !senha) {
-                alert('Por favor, preencha todos os campos!');
-                return;
-            }
+      <!-- Input Senha -->
+      <div class="input-group">
+        <label for="senha">Senha</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock input-icon"></i>
+          <!-- Lógica de mostrar senha -->
+          <input 
+            [(ngModel)]="senha" 
+            name="senha" 
+            id="senha" 
+            [type]="mostrarSenha ? 'text' : 'password'" 
+            placeholder="Sua senha" 
+            required 
+          />
+          <button type="button" class="toggle-password" (click)="toggleSenha()">
+            <i [class]="mostrarSenha ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+      </div>
 
-            // Simular loading
-            btn.innerHTML = '<div class="spinner"></div>';
-            btn.disabled = true;
+      <!-- Botão de Registro -->
+      <button type="button" class="btn-primary" (click)="register()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">CRIAR CONTA</span>
+        <!-- Spinner só aparece carregando -->
+        <div *ngIf="isLoading" class="spinner"></div>
+      </button>
 
-            setTimeout(() => {
-                alert('Conta criada com sucesso!');
-                btn.innerHTML = '<span>CRIAR CONTA</span>';
-                btn.disabled = false;
-                // Redirecionar para login
-                window.location.href = '/login';
-            }, 2000);
-        }
+      <!-- Divisor -->
+      <div class="divider">
+        <span>ou</span>
+      </div>
 
-        function irParaLogin() {
-            window.location.href = '/login';
-        }
-    </script>
+      <!-- Link de login -->
+      <div class="register-link">
+        Já tem uma conta? <a href="/login">Faça login aqui</a>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,53 +1,57 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms'; // 
 import { AuthController } from 'src/app/controllers/auth.controller';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule], 
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
+  // ... resto do código igual
   
   nome: string = '';
   email: string = '';
   senha: string = '';
   isPlus: boolean = false;
-  showPassword: boolean = false;
-  loading: boolean = false;
+  isLoading: boolean = false;
 
   constructor(private auth: AuthController, private router: Router) {}
 
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
-  }
+  mostrarSenha: boolean = false;
 
   register(): void {
-    this.loading = true;
-    
-    // Definir o tipo de usuário baseado no checkbox
-    const tipoUsuario = this.isPlus ? 'premium' : 'basic';
+    console.log('Dados no Componente:', this.nome, this.email, this.senha); // Debug
 
-    this.auth.register(this.nome, this.email, this.senha, tipoUsuario).subscribe({
+    if (!this.nome || !this.email || !this.senha) {
+      alert('Preencha todos os campos antes de enviar!');
+      return;
+    }
+
+    this.isLoading = true;
+    const tipo = this.isPlus ? 'premium' : 'basic';
+
+    this.auth.register(this.nome, this.email, this.senha, tipo).subscribe({
       next: () => {
-        this.loading = false;
-        alert('Conta criada com sucesso! Faça login.');
+        this.isLoading = false;
+        alert('Conta criada com sucesso!');
         this.router.navigate(['/login']);
       },
       error: (err: any) => {
-        this.loading = false;
-        console.error('Erro:', err);
-        alert('Erro ao criar conta. Tente novamente.');
+        this.isLoading = false;
+        console.error(err);
+        alert('Erro: ' + (err.error?.message || 'Falha no servidor'));
       }
     });
   }
 
-  irParaLogin(): void {
-    this.router.navigate(['/login']);
+  toggleSenha() {
+    this.mostrarSenha = !this.mostrarSenha;
   }
+  
+  voltar() { this.router.navigate(['/login']); }
 }
