@@ -1,33 +1,38 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthController {
   
-  // Aponta para o servidor Node que acabamos de criar
-  private apiUrl = 'https://fruity-deer-reply.loca.lt/api'; 
+  // Se estiver usando Render ou Ngrok, verifique se o link está certo aqui!
+  private apiUrl = 'http://localhost:5000/api'; 
 
   constructor(private http: HttpClient) {}
 
-  // --- LOGIN REAL ---
   login(email: string, senha: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, { email, senha }).pipe(
-      tap(res => {
-        // Se o Node responder sucesso, salvamos os dados reais
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('user', JSON.stringify(res.usuario));
-      })
-    );
+    // Mapeia 'senha' para 'password' se o backend esperar password
+    return this.http.post<any>(`${this.apiUrl}/login`, { email, password: senha });
   }
 
-  // --- REGISTRO REAL ---
-  register(name: string, email: string, senha: string, tipo: 'basic' | 'premium' | 'admin' = 'basic'): Observable<any> {
-    // Manda pro Node salvar no MongoDB
-    return this.http.post<any>(`${this.apiUrl}/register`, { name, email, senha, tipo });
+  // AQUI ESTAVA O PROBLEMA DO REGISTRO
+  register(nome: string, email: string, senha: string, tipo: string = 'basic'): Observable<any> {
+    
+    // Cria o objeto EXATAMENTE como o Mongoose espera (Schema do server.js)
+    const dadosParaEnviar = {
+      name: nome,        // O banco quer 'name', você tinha 'nome'
+      email: email,      // Igual
+      password: senha,   // O banco quer 'password', você tinha 'senha'
+      tipo: tipo         // Igual
+    };
+
+    console.log('📤 Angular enviando:', dadosParaEnviar); // Debug no navegador
+
+    return this.http.post<any>(`${this.apiUrl}/register`, dadosParaEnviar);
   }
 
+  // ... (o resto do arquivo: logout, getUser, etc. pode manter igual)
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

@@ -6,8 +6,8 @@ import { AuthController } from './auth.controller'; // Importar para pegar o ID 
 @Injectable({ providedIn: 'root' })
 export class IAController {
 
-  private pythonUrl = 'https://kind-moose-take.loca.lt'; 
-  private nodeUrl = 'https://fruity-deer-reply.loca.lt/api'; 
+  private pythonUrl = 'http://localhost:8000'; 
+  private nodeUrl = 'http://localhost:5000/api'; 
 
   constructor(private http: HttpClient, private auth: AuthController) {}
 
