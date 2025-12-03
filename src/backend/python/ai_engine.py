@@ -112,39 +112,72 @@ def processar_resposta(texto):
 
 # --- ROTAS DE AUTENTICAÇÃO (LOGIN E REGISTRO) ---
 
+# --- ROTA DE REGISTRO (COM PROTEÇÃO DE TAMANHO) ---
 @app.post("/register")
 async def register_user(user: UserAuth):
-    if users_collection is None:
-        raise HTTPException(status_code=503, detail="Banco de dados desconectado")
-    
-    if users_collection.find_one({"email": user.email}):
-        raise HTTPException(status_code=400, detail="Este email já está cadastrado.")
-    
-    hashed_password = pwd_context.hash(user.password)
-    
-    users_collection.insert_one({
-        "email": user.email,
-        "password": hashed_password,
-        "created_at": datetime.utcnow()
-    })
-    
-    return {"message": "Usuário criado com sucesso!"}
+    try:
+        # DEBUG: Vamos ver o que está chegando (só para testes!)
+        print(f"Tentando registrar: {user.email}")
+        print(f"Tamanho da senha recebida: {len(user.password)}")
 
-# --- ROTA DE LOGIN CORRIGIDA ---
+        # 1. Validação do Banco
+        if users_collection is None:
+            raise HTTPException(status_code=503, detail="Banco de dados desconectado")
+        
+        # 2. Validação de Tamanho da Senha
+        if len(user.password) > 70:
+            raise HTTPException(status_code=400, detail="A senha é muito longa (máximo 70 caracteres).")
+        
+        # 3. Verifica duplicidade
+        if users_collection.find_one({"email": user.email}):
+            raise HTTPException(status_code=400, detail="Este email já está cadastrado.")
+        
+        # 4. Criptografa
+        hashed_password = pwd_context.hash(user.password)
+        
+        users_collection.insert_one({
+            "email": user.email,
+            "password": hashed_password,
+            "created_at": datetime.utcnow()
+        })
+        
+        return {"message": "Usuário criado com sucesso!"}
+
+    except Exception as e:
+        print("ERRO NO REGISTRO:")
+        import traceback
+        traceback.print_exc()
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")
+
+# --- ROTA DE LOGIN (COM PROTEÇÃO) ---
 @app.post("/login")
 async def login_user(user: UserAuth):
-    if users_collection is None:
-        raise HTTPException(status_code=503, detail="Banco de dados desconectado")
+    try:
+        if users_collection is None:
+            raise HTTPException(status_code=503, detail="Banco de dados desconectado")
 
-    user_found = users_collection.find_one({"email": user.email})
-    
-    if not user_found:
-        raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
-    
-    if not pwd_context.verify(user.password, user_found["password"]):
-        raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
-    
-    return {"message": "Login realizado com sucesso!", "email": user.email}
+        if len(user.password) > 72:
+            raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
+
+        user_found = users_collection.find_one({"email": user.email})
+        
+        if not user_found:
+            raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
+        
+        if not pwd_context.verify(user.password, user_found["password"]):
+            raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
+        
+        return {"message": "Login realizado com sucesso!", "email": user.email}
+
+    except Exception as e:
+        print("ERRO NO LOGIN:")
+        import traceback
+        traceback.print_exc()
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")
 
 # --- ROTA DO CHAT ---
 
