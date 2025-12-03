@@ -79,51 +79,42 @@ export class ChatComponent implements AfterViewChecked, OnInit {
 
     const msg = this.textoInput;
 
-    // ... dentro do enviar()
 
-    // 1. FILTRAGEM (A Mágica acontece aqui)
-    // Removemos qualquer mensagem que esteja vazia ou null para não quebrar o Python
-    const historicoLimpo = this.mensagens.filter(
-      (m) => m.texto && m.texto.trim() !== ''
-    );
+    // 1. Pegamos todas as mensagens atuais
+    // 2. O .filter remove qualquer coisa que seja null, undefined ou vazia
+    const historicoLimpo = this.mensagens
+      .filter(
+        (m) => m.texto && m.texto !== null && String(m.texto).trim() !== ''
+      )
+      .map((m) => ({
+        role: m.tipo === 'user' ? 'user' : 'model',
+        // O String() aqui garante que NUNCA vai ser null, no pior caso vira a palavra "null"
+        parts: [String(m.texto)],
+      }));
 
-    // 2. FORMATAÇÃO
-    const historicoFormatado = historicoLimpo.map((m) => ({
-      role: m.tipo === 'user' ? 'user' : 'model',
-      parts: [m.texto], // Agora garantimos que m.texto nunca é null
-    }));
+    // DEBUG: Olha no console do navegador (F12) o que estamos mandando agora
+    console.log('Histórico LIMPO sendo enviado:', historicoLimpo);
 
+    // --- ATUALIZA A TELA ---
     this.mensagens.push({ texto: msg, tipo: 'user' });
     this.textoInput = '';
     this.carregando = true;
 
-    // 3. ENVIA O HISTÓRICO LIMPO
+    // --- ENVIA ---
     this.ia
-      .perguntar(msg, historicoFormatado)
+      .perguntar(msg, historicoLimpo) // Envia a versão limpa!
       .pipe(finalize(() => (this.carregando = false)))
       .subscribe({
         next: (res: any) => {
-          // Aceita 'response' (do Python novo) ou 'resposta' (caso antigo)
-          const textoResposta =
-            res.response || res.resposta || 'Sem resposta da IA.';
-
-          this.mensagens.push({ texto: textoResposta, tipo: 'ai' });
+          const resposta = res.response || res.resposta || 'Sem resposta.';
+          this.mensagens.push({ texto: resposta, tipo: 'ai' });
         },
         error: (err: any) => {
-          console.error('Erro detalhado:', err);
-
-          // Mensagem amigável para você saber o que houve
-          let msgErro = 'Erro desconhecido.';
-
-          if (err.status === 0)
-            msgErro = 'Sem conexão. Verifique HTTPS ou AdBlock.';
-          else if (err.status === 404)
-            msgErro = 'Endereço da API errado (404).';
-          else if (err.status === 500)
-            msgErro = 'Erro no servidor Python (500).';
-          else if (err.status === 400) msgErro = 'Dados inválidos enviados.';
-
-          this.mensagens.push({ texto: `[ERRO] ${msgErro}`, tipo: 'ai' });
+          console.error('Erro:', err);
+          this.mensagens.push({
+            texto: 'Erro ao processar mensagem.',
+            tipo: 'ai',
+          });
         },
       });
   }
