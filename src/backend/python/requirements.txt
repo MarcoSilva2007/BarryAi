@@ -6,4 +6,5 @@ pydantic
 pymongo
 dnspython
 requests
-passlib[bcrypt]
+bcrypt
+email-validator

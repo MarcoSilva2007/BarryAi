@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // 
-import { AuthController } from 'src/app/controllers/auth.controller';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -12,20 +12,19 @@ import { AuthController } from 'src/app/controllers/auth.controller';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  // ... resto do código igual
   
   nome: string = '';
   email: string = '';
   senha: string = '';
   isPlus: boolean = false;
   isLoading: boolean = false;
-
-  constructor(private auth: AuthController, private router: Router) {}
-
   mostrarSenha: boolean = false;
 
+  constructor(private authService: AuthService, private router: Router) {}
+
   register(): void {
-    console.log('Dados no Componente:', this.nome, this.email, this.senha); // Debug
+    // Debug para garantir que é texto simples
+    console.log('Senha digitada:', this.senha); 
 
     if (!this.nome || !this.email || !this.senha) {
       alert('Preencha todos os campos antes de enviar!');
@@ -33,9 +32,9 @@ export class RegisterComponent {
     }
 
     this.isLoading = true;
-    const tipo = this.isPlus ? 'premium' : 'basic';
 
-    this.auth.register(this.nome, this.email, this.senha, tipo).subscribe({
+    // 👇 MUDANÇA 3: Chama o service direto
+    this.authService.register(this.nome, this.email, this.senha).subscribe({
       next: () => {
         this.isLoading = false;
         alert('Conta criada com sucesso!');
@@ -44,7 +43,9 @@ export class RegisterComponent {
       error: (err: any) => {
         this.isLoading = false;
         console.error(err);
-        alert('Erro: ' + (err.error?.message || 'Falha no servidor'));
+        // Tenta pegar a mensagem de erro bonita do Python
+        const mensagemErro = err.error?.detail || 'Falha no servidor';
+        alert('Erro: ' + mensagemErro);
       }
     });
   }

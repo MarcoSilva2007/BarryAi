@@ -4,7 +4,7 @@ import random
 from urllib.parse import quote
 from datetime import datetime
 from typing import List
-
+import bcrypt
 import google.generativeai as genai
 from fastapi import FastAPI, HTTPException # <--- Adicionei HTTPException
 from pydantic import BaseModel
@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from pymongo import MongoClient
-from passlib.context import CryptContext # <--- Importante para segurança
 
 # 1. Carrega Variáveis de Ambiente
 load_dotenv()
@@ -35,8 +34,6 @@ if mongo_uri:
 else:
     print("⚠️ AVISO: MONGO_URI não encontrado.")
 
-# 3. Configura Segurança de Senha (Criptografia)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # 4. Configura o Gemini
 if api_key:
@@ -116,24 +113,21 @@ def processar_resposta(texto):
 @app.post("/register")
 async def register_user(user: UserAuth):
     try:
-        # DEBUG: Vamos ver o que está chegando (só para testes!)
-        print(f"Tentando registrar: {user.email}")
-        print(f"Tamanho da senha recebida: {len(user.password)}")
-
-        # 1. Validação do Banco
         if users_collection is None:
             raise HTTPException(status_code=503, detail="Banco de dados desconectado")
         
-        # 2. Validação de Tamanho da Senha
-        if len(user.password) > 70:
-            raise HTTPException(status_code=400, detail="A senha é muito longa (máximo 70 caracteres).")
-        
-        # 3. Verifica duplicidade
+        # Verifica duplicidade
         if users_collection.find_one({"email": user.email}):
             raise HTTPException(status_code=400, detail="Este email já está cadastrado.")
         
-        # 4. Criptografa
-        hashed_password = pwd_context.hash(user.password)
+        # --- CRIPTOGRAFIA NOVA (BCRYPT PURO) ---
+        # 1. Transforma a senha em bytes
+        senha_bytes = user.password.encode('utf-8')
+        # 2. Gera o sal e o hash
+        salt = bcrypt.gensalt()
+        hashed_bytes = bcrypt.hashpw(senha_bytes, salt)
+        # 3. Transforma de volta em string para salvar no Mongo
+        hashed_password = hashed_bytes.decode('utf-8')
         
         users_collection.insert_one({
             "email": user.email,
@@ -151,22 +145,23 @@ async def register_user(user: UserAuth):
             raise e
         raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")
 
-# --- ROTA DE LOGIN (COM PROTEÇÃO) ---
+# --- ROTA DE LOGIN (COM BCRYPT DIRETO) ---
 @app.post("/login")
 async def login_user(user: UserAuth):
     try:
         if users_collection is None:
             raise HTTPException(status_code=503, detail="Banco de dados desconectado")
 
-        if len(user.password) > 72:
-            raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
-
         user_found = users_collection.find_one({"email": user.email})
         
         if not user_found:
             raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
         
-        if not pwd_context.verify(user.password, user_found["password"]):
+        # --- VERIFICAÇÃO NOVA (BCRYPT PURO) ---
+        senha_enviada = user.password.encode('utf-8')
+        senha_no_banco = user_found["password"].encode('utf-8')
+
+        if not bcrypt.checkpw(senha_enviada, senha_no_banco):
             raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
         
         return {"message": "Login realizado com sucesso!", "email": user.email}
