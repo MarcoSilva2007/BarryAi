@@ -114,14 +114,12 @@ def processar_resposta(texto):
 
 @app.post("/register")
 async def register_user(user: UserAuth):
-    if not users_collection:
+    if users_collection is None:
         raise HTTPException(status_code=503, detail="Banco de dados desconectado")
     
-    # Verifica se já existe
     if users_collection.find_one({"email": user.email}):
         raise HTTPException(status_code=400, detail="Este email já está cadastrado.")
     
-    # Criptografa a senha antes de salvar
     hashed_password = pwd_context.hash(user.password)
     
     users_collection.insert_one({
@@ -132,18 +130,17 @@ async def register_user(user: UserAuth):
     
     return {"message": "Usuário criado com sucesso!"}
 
+# --- ROTA DE LOGIN CORRIGIDA ---
 @app.post("/login")
 async def login_user(user: UserAuth):
-    if not users_collection:
+    if users_collection is None:
         raise HTTPException(status_code=503, detail="Banco de dados desconectado")
 
-    # Busca usuário
     user_found = users_collection.find_one({"email": user.email})
     
     if not user_found:
         raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
     
-    # Verifica senha
     if not pwd_context.verify(user.password, user_found["password"]):
         raise HTTPException(status_code=400, detail="Email ou senha incorretos.")
     

@@ -9,7 +9,7 @@ app.use(express.json());
 
 // --- CONFIGURAÇÃO DO BANCO ---
 
-const mongoUri = 'mongodb+srv://adminDB:mmpv4@barryclus.syg9qut.mongodb.net/?appName=BarryClus'; 
+const mongoUri = 'mongodb+srv://adminDB:mmpv4@barryclus.syg9qut.mongodb.net/barry_db?appName=BarryClus'; 
 
 console.log('⏳ Tentando conectar ao MongoDB...');
 
