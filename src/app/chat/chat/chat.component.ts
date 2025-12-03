@@ -79,29 +79,28 @@ export class ChatComponent implements AfterViewChecked, OnInit {
 
     const msg = this.textoInput;
 
-    // --- 1. PREPARAÇÃO DO HISTÓRICO ---
-    // O Python espera o formato do Gemini (role/parts), mas seu front usa (texto/tipo).
-    // Vamos converter para não dar Erro 500 no backend.
-    const historicoFormatado = this.mensagens.map((m) => ({
-      role: m.tipo === 'user' ? 'user' : 'model', // Converte 'ai' para 'model'
-      parts: [m.texto], // Gemini exige que o texto esteja numa lista 'parts'
+    // ... dentro do enviar()
+
+    // 1. FILTRAGEM (A Mágica acontece aqui)
+    // Removemos qualquer mensagem que esteja vazia ou null para não quebrar o Python
+    const historicoLimpo = this.mensagens.filter(
+      (m) => m.texto && m.texto.trim() !== ''
+    );
+
+    // 2. FORMATAÇÃO
+    const historicoFormatado = historicoLimpo.map((m) => ({
+      role: m.tipo === 'user' ? 'user' : 'model',
+      parts: [m.texto], // Agora garantimos que m.texto nunca é null
     }));
 
-    // --- 2. ATUALIZA A TELA ---
     this.mensagens.push({ texto: msg, tipo: 'user' });
     this.textoInput = '';
-    this.carregando = true; // Liga animação
+    this.carregando = true;
 
-    // --- 3. ENVIA PARA O PYTHON ---
-    // Obs: Removi o 'salvarNoBanco' daqui pois o seu Python já faz isso sozinho no backend!
+    // 3. ENVIA O HISTÓRICO LIMPO
     this.ia
       .perguntar(msg, historicoFormatado)
-      .pipe(
-        // ISSO GARANTE QUE PARA DE DIGITAR, MESMO COM ERRO
-        finalize(() => {
-          this.carregando = false;
-        })
-      )
+      .pipe(finalize(() => (this.carregando = false)))
       .subscribe({
         next: (res: any) => {
           // Aceita 'response' (do Python novo) ou 'resposta' (caso antigo)
