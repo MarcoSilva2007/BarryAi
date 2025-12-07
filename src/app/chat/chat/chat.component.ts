@@ -1,8 +1,15 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  AfterViewChecked,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
 import { IAController } from '../../controllers/ia.controller';
+import { finalize } from 'rxjs/operators';
 
 interface Mensagem {
   texto: string;
@@ -14,17 +21,16 @@ interface Mensagem {
   standalone: true,
   imports: [CommonModule, FormsModule, MarkdownModule],
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss']
+  styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements AfterViewChecked, OnInit {
-  
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
   mensagens: Mensagem[] = [];
-  textoInput: string = ''; 
+  textoInput: string = '';
   carregando: boolean = false;
 
-   isDashboardCollapsed = false;
+  isDashboardCollapsed = false;
 
   toggleDashboard() {
     this.isDashboardCollapsed = !this.isDashboardCollapsed;
@@ -41,14 +47,17 @@ export class ChatComponent implements AfterViewChecked, OnInit {
           // ADICIONADO ': any' PARA PARAR O ERRO
           this.mensagens = msgsDoBanco.map((m: any) => ({
             texto: m.text,
-            tipo: m.sender === 'user' ? 'user' : 'ai'
+            tipo: m.sender === 'user' ? 'user' : 'ai',
           }));
         } else {
-           this.mensagens.push({ texto: "**Olá!** Sou o Barry AI. Vamos correr?", tipo: 'ai' });
+          this.mensagens.push({
+            texto: '**Olá!** Sou o Barry AI. Vamos correr?',
+            tipo: 'ai',
+          });
         }
         this.carregando = false;
       },
-      error: () => this.carregando = false
+      error: () => (this.carregando = false),
     });
   }
 
@@ -58,37 +67,55 @@ export class ChatComponent implements AfterViewChecked, OnInit {
 
   scrollToBottom(): void {
     try {
-      if(this.myScrollContainer) {
-        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+      if (this.myScrollContainer) {
+        this.myScrollContainer.nativeElement.scrollTop =
+          this.myScrollContainer.nativeElement.scrollHeight;
       }
-    } catch(err) { }
+    } catch (err) {}
   }
 
   enviar(): void {
     if (!this.textoInput.trim()) return;
 
     const msg = this.textoInput;
-    const historicoParaEnviar = [...this.mensagens]; // Copia o estado atual
 
-    // 1. Mostra na tela
+
+    // 1. Pegamos todas as mensagens atuais
+    // 2. O .filter remove qualquer coisa que seja null, undefined ou vazia
+    const historicoLimpo = this.mensagens
+      .filter(
+        (m) => m.texto && m.texto !== null && String(m.texto).trim() !== ''
+      )
+      .map((m) => ({
+        role: m.tipo === 'user' ? 'user' : 'model',
+        // O String() aqui garante que NUNCA vai ser null, no pior caso vira a palavra "null"
+        parts: [String(m.texto)],
+      }));
+
+    // DEBUG: Olha no console do navegador (F12) o que estamos mandando agora
+    console.log('Histórico LIMPO sendo enviado:', historicoLimpo);
+
+    // --- ATUALIZA A TELA ---
     this.mensagens.push({ texto: msg, tipo: 'user' });
-    this.ia.salvarNoBanco(msg, 'user');
-    
     this.textoInput = '';
     this.carregando = true;
 
-    // 2. Envia para o Python
-    this.ia.perguntar(msg, historicoParaEnviar).subscribe({
-      next: (res: any) => {
-        this.mensagens.push({ texto: res.resposta, tipo: 'ai' });
-        this.ia.salvarNoBanco(res.resposta, 'ai');
-        this.carregando = false;
-      },
-      error: (err: any) => {
-        console.error(err);
-        this.mensagens.push({ texto: 'Erro de conexão.', tipo: 'ai' });
-        this.carregando = false;
-      }
-    });
+    // --- ENVIA ---
+    this.ia
+      .perguntar(msg, historicoLimpo) // Envia a versão limpa!
+      .pipe(finalize(() => (this.carregando = false)))
+      .subscribe({
+        next: (res: any) => {
+          const resposta = res.response || res.resposta || 'Sem resposta.';
+          this.mensagens.push({ texto: resposta, tipo: 'ai' });
+        },
+        error: (err: any) => {
+          console.error('Erro:', err);
+          this.mensagens.push({
+            texto: 'Erro ao processar mensagem.',
+            tipo: 'ai',
+          });
+        },
+      });
   }
 }

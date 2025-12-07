@@ -1,24 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // 🔥 Aqui vai a URL base da API
-  private apiUrl = 'http://localhost:3000/api/auth';
+
+  // A URL vem do environment (não use localhost:3000 fixo)
+  private apiUrl = environment.apiUrl; 
 
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string): Observable<any> {
-    // A requisição será feita para: http://localhost:5000/api/auth/login
+    // Envia para https://barryai.../login
     return this.http.post(`${this.apiUrl}/login`, { email, password });
   }
 
+  // Ajustei para enviar apenas o que o Python espera (email e password)
+  // Se o seu Python não tem campo 'name', não adianta enviar daqui por enquanto.
   register(name: string, email: string, password: string): Observable<any> {
-    // A requisição será feita para: http://localhost:5000/api/auth/register
-    return this.http.post(`${this.apiUrl}/register`, { name, email, password });
+    // Envia para https://barryai.../register
+    return this.http.post(`${this.apiUrl}/register`, { email, password });
   }
 }
