@@ -9,7 +9,7 @@ app.use(express.json());
 
 // --- CONFIGURAÇÃO DO BANCO ---
 
-const mongoUri = 'mongodb+srv://adminDB:mmpv4@barryclus.syg9qut.mongodb.net/barry_db?appName=BarryClus'; 
+const mongoUri = 'mongodb://localhost:27017/barrydb'; 
 
 console.log('⏳ Tentando conectar ao MongoDB...');
 
